@@ -1,14 +1,13 @@
-import * as mongoDB from "mongodb";
 import * as dotenv from "dotenv";
 
-export async function connectToDatabase () {
+import { connect } from "mongoose";
+
+export async function connectDB(){
     dotenv.config();
- 
-    const client: mongoDB.MongoClient = new mongoDB.MongoClient(process.env.DB_CONN_STRING);
-            
-    await client.connect();
-        
-    const db: mongoDB.Db = client.db(process.env.DB_NAME);
-       
-    console.log(`Conectado con éxito a la base de datos: ${db.databaseName}`);
- }
+    try {
+        await connect(process.env.DB_CONN_STRING);
+        console.log("Conectado con éxito a la base de datos: DB_HighPaper");
+    } catch (err) {
+        console.error(err.message);
+    }
+};
