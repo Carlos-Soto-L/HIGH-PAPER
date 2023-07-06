@@ -12,13 +12,13 @@ export class Validator {
         .withMessage('Nombre es requerido')
         .isLength({ min: 3, max: 20 })
         .withMessage('Por favor, ingrese su nombre de forma correcta')
-        .matches(/^[a-zA-Z]+$/)
+        .matches(/^[a-zA-Z\s]+$/)
         .withMessage('El nombre solo debe contener letras'),
         body('sApePaterno')
         .trim()
         .not()
         .isEmpty()
-        .withMessage('El campo pellido materno no debe estar vacío')
+        .withMessage('El campo apellido materno no debe estar vacío')
         .isLength({ min: 3, max: 12 })
         .withMessage('Por favor, ingrese su nombre de forma correcta')
         .matches(/^[a-zA-Z]+$/)
@@ -80,9 +80,14 @@ export class Validator {
       (req: Request, res: Response, next: NextFunction) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-          return res.status(400).json({ mensaje: errors.array()[0].msg  });
+          return res.status(400).json({
+            status:0, 
+            mensaje: errors.array()[0].msg
+          });
         }
-        next();
+        else{
+          next();
+        }
       },
     ];
   }
@@ -130,9 +135,14 @@ export class Validator {
       (req: Request, res: Response, next: NextFunction) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-          return res.status(400).json({ mensaje: errors.array()[0].msg });
+          return res.status(400).json({
+            status:0, 
+            mensaje: errors.array()[0].msg
+          });
         }
-        next();
+        else{
+          next();
+        }
       },
     ];
   }

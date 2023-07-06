@@ -56,7 +56,11 @@ export default class DBmanipulation{
     public static async getUsuario(sUsuario: string = null, sCorreo: string = null){
       try {
 
-            this.oResultado = await User.find({ sUsuario: sUsuario }).exec();
+        if (sUsuario != null) {
+          this.oResultado = await User.find({ sUsuario: sUsuario }).exec();
+        } else {
+          this.oResultado = await User.find({ sCorreo: sCorreo }).exec();
+        }
 
       } catch (error) {
         console.log(error)
