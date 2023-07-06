@@ -23,6 +23,8 @@ class authController {
                 resultado = await DBmanipulation.getUsuario(null, sCorreo);
             }
 
+            console.log(resultado)
+
             for(let usuario of resultado){
                 //Verificar contraseña
                 if(sPassword == usuario.sPassword){
@@ -33,15 +35,25 @@ class authController {
                     // Se almacena el token en una cookies
                     res.cookie("jwt",token.toString());
 
-                    return res.json({mensaje: 'Autenticación correcta', token} );
+                        return res.status(200).json({
+                          status:1, 
+                          mensaje: null
+                        });
+
                 }else{
-                    return res.status(400).json({mensaje:"El usuario y o constraseña es incorrecta"});
+                    return res.status(200).json({
+                        status:0, 
+                        mensaje: "El usuario y o constraseña es incorrecta"
+                      });
                 }
             }
 
         } catch (error) {
             console.log(error)
-            return res.status(500).send("Error interno");
+            return res.status(200).json({
+                status:0, 
+                mensaje: "Error interno"
+              });
         }
 
     }

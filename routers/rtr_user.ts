@@ -4,8 +4,9 @@ import { Validator } from '../class/cls_validator'
 
 const userRouter = express.Router();
 
-userRouter.post('/register', Validator.validarRegistro(), userController.insertar);
+userRouter.post('/registro', Validator.validarRegistro(), userController.insertar);
 
+userRouter.get('/registro',  userController.getRegistro);
 
 // Exporta el enrutador para su uso en otros archivos
 export default userRouter;
