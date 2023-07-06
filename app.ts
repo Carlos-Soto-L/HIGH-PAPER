@@ -3,9 +3,12 @@ import authRouter from './routers/rtr_authentication';
 import userRouter from './routers/rtr_user';
 import { connectDB } from "./services/svc_databaseMongoDB"
 import bodyParse from 'body-parser'
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const port = 3000;
+
+app.use(cookieParser());
 
 // CONEXIÓN A BASE DE DATOS
 connectDB();
