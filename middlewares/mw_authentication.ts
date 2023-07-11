@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { VerifyErrors, VerifyOptions } from 'jsonwebtoken';
+import jwt, { VerifyErrors } from 'jsonwebtoken';
 
 class MWAuthentication {
     public static async isTokenValido(req: Request, res: Response, next: NextFunction){

@@ -64,8 +64,7 @@ class authController {
             DBmanipulation.agregarJWTLstNegra(oToken);
             res.cookie("jwt",null);
         }
-        return res.status(200).send("Cierre de sesión correcta");
-        // res.render("inicio")
+        res.redirect("/");
     }
 
 }

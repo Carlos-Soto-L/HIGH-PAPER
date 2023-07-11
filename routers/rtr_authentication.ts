@@ -8,7 +8,7 @@ const authRouter = express.Router();
 
 authRouter.post('/login', Validator.validarLogin(), authController.login);
 
-authRouter.post('/signout', authController.signOut);
+authRouter.get('/signout', authController.signOut);
 
 // Exporta el enrutador para su uso en otros archivos
 export default authRouter;

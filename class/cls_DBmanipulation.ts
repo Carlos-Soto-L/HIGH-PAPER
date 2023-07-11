@@ -1,5 +1,5 @@
 import User from '../models/mdl_user';
-import LstNegraJWT from '../models/cListaNegraJWT';
+import LstNegraJWT from '../models/mdl_cListaNegraJWT';
 
 export default class DBmanipulation{
 
