@@ -10,47 +10,42 @@ class authController {
     public static async login(req: Request, res: Response){
         try {
             let resultado;
-            const { sUsuario, sCorreo, sPassword,  ...rest } = req.body;
+            const { sAuthUser, sPassword,  ...rest } = req.body;
 
-            if(!sUsuario && !sCorreo){
-                return res.status(400).json({mensaje:"Todos los campos son requeridos"});
-            }
+            resultado = await DBmanipulation.getUsuario(sAuthUser);
 
-            if (sUsuario) {
-                resultado = await DBmanipulation.getUsuario(sUsuario);
-                    //Si la contraseña es correcta se genera un JWT
-            }else{
-                resultado = await DBmanipulation.getUsuario(null, sCorreo);
-            }
-
-            console.log(resultado)
-
-            for(let usuario of resultado){
-                //Verificar contraseña
-                if(sPassword == usuario.sPassword){
-                    //Gernerar PAyload(Información para enc.)
-                    const {sUsuario, sPassword, ...payload}= usuario;
-                    //Generar JWT (JSONWEBTOKEN)
-                    var token = jwt.sign(payload, process.env.KEY_SECRET, {expiresIn: '1h'});
-                    // Se almacena el token en una cookies
-                    res.cookie("jwt",token.toString());
-
-                        return res.status(200).json({
-                          status:1, 
-                          mensaje: null
-                        });
-
-                }else{
-                    return res.status(200).json({
-                        status:0, 
-                        mensaje: "El usuario y o constraseña es incorrecta"
-                      });
+            if(resultado != false){
+                for(let usuario of resultado){
+                    //Verificar contraseña
+                    if(sPassword == usuario.sPassword){
+                        //Gernerar PAyload(Información para enc.)
+                        const {sUsuario, sPassword, ...payload}= usuario;
+                        //Generar JWT (JSONWEBTOKEN)
+                        var token = jwt.sign(payload, process.env.KEY_SECRET, {expiresIn: '1h'});
+                        // Se almacena el token en una cookies
+                        res.cookie("jwt",token.toString());
+    
+                            return res.status(200).json({
+                              status:1, 
+                              mensaje: null
+                            });
+    
+                    }else{
+                        return res.status(401).json({
+                            status:0, 
+                            mensaje: "El usuario y o constraseña es incorrecta"
+                          });
+                    }
                 }
+            }else{
+                return res.status(401).json({
+                    status:0, 
+                    mensaje: "El usuario y o constraseña es incorrecta"
+                  });
             }
-
         } catch (error) {
             console.log(error)
-            return res.status(200).json({
+            return res.status(500).json({
                 status:0, 
                 mensaje: "Error interno"
               });

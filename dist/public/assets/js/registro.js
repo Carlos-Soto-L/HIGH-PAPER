@@ -1,9 +1,9 @@
 
-const form = document.getElementById('registroform');
+const oFormRegistro= document.getElementById('registroform');
 
-form.addEventListener('submit', async (e) => {
+oFormRegistro.addEventListener('submit', async (e) => {
   e.preventDefault(); // Evita que se envíe la solicitud de forma convencional
-  const formData = new FormData(form);
+  const formData = new FormData(oFormRegistro);
   const data = {};
 
   // Agregar valores de formulario a objeto JSON

@@ -10,10 +10,8 @@ class userController {
     public static async insertar(req: Request, res: Response){
         try {
 
-            console.log(req.body);
-
             const { sNombre, sApePaterno, sApeMaterno, 
-            sUsuario, sCorreo, sTelefono, sPassword,  ...rest } = req.body;
+            sUsuario, sCorreo, sTelefono, sPassword1,  ...rest } = req.body;
 
             const oUser = {
                 sNombre: sNombre,
@@ -22,7 +20,8 @@ class userController {
                 sUsuario: sUsuario,
                 sCorreo: sCorreo,
                 sTelefono: sTelefono,
-                sPassword: sPassword
+                sPassword: sPassword1,
+                iRol: 1,
             }
 
             await DBmanipulation.insertarDocumento(oUser, "cUsuario");
@@ -41,8 +40,6 @@ class userController {
         }
 
     }
- 
-
 
 }
 

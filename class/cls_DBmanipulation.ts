@@ -53,13 +53,13 @@ export default class DBmanipulation{
     }
 
 
-    public static async getUsuario(sUsuario: string = null, sCorreo: string = null){
+    public static async getUsuario(sAuthUser: string){
       try {
 
-        if (sUsuario != null) {
-          this.oResultado = await User.find({ sUsuario: sUsuario }).exec();
-        } else {
-          this.oResultado = await User.find({ sCorreo: sCorreo }).exec();
+        this.oResultado = await User.find({ sCorreo: sAuthUser }).exec();
+
+        if (this.oResultado[0] == null) {
+          this.oResultado = await User.find({ sUsuario: sAuthUser }).exec();
         }
 
       } catch (error) {

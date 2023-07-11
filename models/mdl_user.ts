@@ -16,8 +16,9 @@ const userSchema:Schema = new Schema({
     sApeMaterno: { type: String, required: true },
     sUsuario: { type: String, required: true, unique: true },
     sCorreo: { type: String, required: true, unique: true },
-    sTelefono: { type: String, required: true },
+    sTelefono: { type: String, required: false },
     sPassword: { type: String, required: true },
+    iRol:{ type:Number, required:true }
   },
   {
     collection: 'cUsuario'
