@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import DBmanipulation from '../class/cls_DBmanipulation';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+
 
 class authController {
 
@@ -17,7 +19,10 @@ class authController {
             if(resultado != false){
                 for(let usuario of resultado){
                     //Verificar contraseña
-                    if(sPassword == usuario.sPassword){
+
+                    const isPasswordCorrect = bcrypt.compareSync(sPassword, usuario.sPassword);
+
+                    if (isPasswordCorrect) {
                         //Gernerar PAyload(Información para enc.)
                         const {sUsuario, sPassword, ...payload}= usuario;
                         //Generar JWT (JSONWEBTOKEN)
@@ -26,11 +31,10 @@ class authController {
                         res.cookie("jwt",token.toString());
     
                             return res.status(200).json({
-                              status:1, 
-                              mensaje: null
+                                status:1, 
+                                mensaje: null
                             });
-    
-                    }else{
+                    } else {
                         return res.status(401).json({
                             status:0, 
                             mensaje: "El usuario y o constraseña es incorrecta"

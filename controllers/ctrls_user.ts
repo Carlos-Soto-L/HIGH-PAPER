@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import DBmanipulation from '../class/cls_DBmanipulation';
-
+import bcrypt from 'bcryptjs';
 
 class userController {
     public static getRegistro(req: Request, res: Response) {
@@ -13,6 +13,8 @@ class userController {
             const { sNombre, sApePaterno, sApeMaterno, 
             sUsuario, sCorreo, sTelefono, sPassword1,  ...rest } = req.body;
 
+            const sPassword = bcrypt.hashSync(sPassword1, 10);
+
             const oUser = {
                 sNombre: sNombre,
                 sApePaterno: sApePaterno,
@@ -20,7 +22,7 @@ class userController {
                 sUsuario: sUsuario,
                 sCorreo: sCorreo,
                 sTelefono: sTelefono,
-                sPassword: sPassword1,
+                sPassword: sPassword,
                 iRol: 1,
             }
 

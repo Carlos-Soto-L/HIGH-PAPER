@@ -27,7 +27,7 @@ class Utils{
             return isValido
             
         } catch (error) {
-            console.log(error)
+            //console.log(error)
         }
 
     }
