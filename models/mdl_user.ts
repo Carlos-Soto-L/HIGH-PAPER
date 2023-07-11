@@ -8,6 +8,8 @@ export interface IUser extends Document{
   sCorreo: String;
   sTelefono: String;
   sPassword: String;
+  iRol: Number;
+  sFoto: String;
 }
 
 const userSchema:Schema = new Schema({
@@ -18,6 +20,7 @@ const userSchema:Schema = new Schema({
     sCorreo: { type: String, required: true, unique: true },
     sTelefono: { type: String, required: false },
     sPassword: { type: String, required: true },
+    sFoto: { type:String, require:false },
     iRol:{ type:Number, required:true }
   },
   {
