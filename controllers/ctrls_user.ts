@@ -3,10 +3,16 @@ import DBmanipulation from '../class/cls_DBmanipulation';
 import bcrypt from 'bcryptjs';
 
 class userController {
+
+    // Renderiza la vista registro.
     public static getRegistro(req: Request, res: Response) {
         res.render('registro', {activar:false, mensaje:null});
     }
 
+            /**
+     * Metodo para dar de alta a un nuevo usuario en el sistema.
+     * @returns status = 1 correcto, status = 0 error.
+     */
     public static async insertar(req: Request, res: Response){
         try {
 

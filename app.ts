@@ -4,7 +4,10 @@ import userRouter from './routers/rtr_user';
 import { connectDB } from "./services/svc_databaseMongoDB"
 import bodyParse from 'body-parser'
 import cookieParser from 'cookie-parser';
-import viewsRouter from './routers/rtr_router'
+import viewsRouter from './routers/rtr_router';
+import adminRouter from './routers/rtr_admin';
+
+
 var path = require('path');
 
 const app = express();
@@ -30,6 +33,8 @@ app.use('/', viewsRouter)
 app.use('/auth',authRouter);
 
 app.use('/user',userRouter);
+
+app.use('/admin',adminRouter);
 
 
 
