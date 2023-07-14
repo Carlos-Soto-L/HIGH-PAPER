@@ -153,6 +153,9 @@ export default class DBmanipulation{
           case "cProducto":
             this.oResultado = await Producto.find({}).exec();
             break;
+          case "cCaracteristica":
+            this.oResultado = await Producto.find({}).exec();
+            break;
           // TO DO: Instanciar el objeto documento con las demas clases ...
           default:
             break;
@@ -172,6 +175,11 @@ export default class DBmanipulation{
     }
 
 
+  /**
+ * Método para obtener los 10 productos mas recientes.
+ *
+ * @returns arreglo con un listado de objetos del esquema productos.
+ */
     public static async obtenerLos10ProductosRecientes(){
       try {
         this.oResultado =  await Producto.find({})
@@ -189,9 +197,27 @@ export default class DBmanipulation{
         }
         
       }
+    }
 
-
-
+  /**
+ * Método para obtener un producto en particular, por medio de su ID.
+ *@param idProducto identificador unico del producto.
+ * @returns objeto del producto..
+ */
+    public static async obtenerProducto(idProducto:string){
+      try {
+        this.oResultado = await Producto.find({_id:idProducto}).exec();
+      } catch (error) {
+        console.log(error)
+      }finally{
+        if (this.oResultado[0] != null) {
+          return this.oResultado;
+        } else {
+          this.oResultado = null;
+          return null;
+        }
+        
+      }
     }
 
 }

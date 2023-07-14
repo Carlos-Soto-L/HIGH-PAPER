@@ -222,9 +222,9 @@ export class Validator {
         .isEmpty()
         .withMessage('El nombre es requerido')
         .isLength({ min: 3, max: 50 })
-        .withMessage('Por favor, ingrese su nombre de forma correcta')
+        .withMessage('Por favor, ingrese su nombre respetando los minimos y maximos')
         .custom((value) => {
-          const regex = /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚ]+$/;
+          const regex = /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚ\.]+$/;
       
           if (!regex.test(value)) {
             throw new Error('El nombre del producto contiene signos');
@@ -239,7 +239,7 @@ export class Validator {
         .isLength({ max: 100 })
         .withMessage('Respete los maximos del campo descripción.')
         .custom((value) => {
-          const regex = /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/;
+          const regex = /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ\.]+$/;
       
           if (!regex.test(value)) {
             throw new Error('El campo descripción contiene signos');

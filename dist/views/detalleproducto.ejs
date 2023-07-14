@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIGH PAPER</title>
+</head>
+<body>
+    <%- include('templates/vw_encabezadoGeneral', {login: isLogin}) %>
+
+    <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel" style="width: 50%; margin: 20px auto;">
+        <div class="carousel-inner">
+            <% producto[0].aFotos.forEach((fotoSRC)=>{ %>
+                <div class="carousel-item active" data-bs-interval="10000">
+                    <img src="<%= fotoSRC %>" class="d-block w-100" alt="...">
+            </div>
+            <% }) %>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          Detalles del producto
+        </div>
+        <div class="card-body">
+          <h5 class="card-title"><%= producto[0].sNombre %></h5>
+          <p class="card-text"><%= producto[0].sDescripcion %></p>
+
+          <p class="card-text"><span style="font-weight: bold;">Total en existencia: </span><%= producto[0].iCantidadExistencia %></p>
+          <p class="card-text"><span style="font-weight: bold;">Precio: </span><%= producto[0].iPrecio %></p>
+
+          <a href="#" class="btn btn-primary" style="float: right;">Añadir al carrito</a>
+          <div style="clear: both;"></div>
+          <p>Características del producto</p>
+          <div class="row">
+            <ul class="list-group col-3">
+              <% caract.forEach((cart)=>{ %>
+              <li class="list-group-item" style="font-weight: bold;"><%= cart.sCaracteristica %></li>
+              <% }) %>
+            </ul>
+
+            <ul class="list-group col-9">
+              <% producto[0].aCaracteristicas.forEach((caract)=>{ %>
+                <% if(caract != null && caract != ""){ %>
+                  <li class="list-group-item"><%= caract %></li>
+                  <% }else{ %>
+                    <li class="list-group-item">----</li>
+                    <% } %>
+              <% }) %>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+    <%- include('templates/vw_footerGeneral') %>
+</body>
+</html>

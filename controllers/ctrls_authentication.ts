@@ -6,9 +6,11 @@ import bcrypt from 'bcryptjs';
 
 class authController {
 
-    
 
-
+    /**
+     * Método para inicio de sesión del usuario.
+     * @returns status = 1 correcto, status = 0 error.
+     */
     public static async login(req: Request, res: Response){
         try {
             let resultado;
@@ -58,7 +60,7 @@ class authController {
     }
 
     /**
-     * signOut
+     * Método para el cierre de sesión del usuario.
      */
     public static signOut(req: Request, res: Response) {
         if (req.cookies.jwt) {

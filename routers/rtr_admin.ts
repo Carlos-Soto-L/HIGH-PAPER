@@ -7,7 +7,7 @@ import { Request, Response, NextFunction } from 'express';
 import multer, { Multer } from 'multer';
 import path from 'path';
 
-
+// Configuración para el almacenamiento de las imagenes de los productos.
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, path.join(__dirname, '../public/assets/img/products/')); // Ruta donde se guardarán los archivos
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         const extension = path.extname(file.originalname);
         const fechaCarga = Date.now().toString();
-        const nombreArchivo = fechaCarga + extension;
+        const nombreArchivo = fechaCarga + Math.random().toString().replace(".","") + extension;
         cb(null, nombreArchivo); // Nuevo nombre del archivo
     },
   });
@@ -48,10 +48,7 @@ adminRouter.post('/caracteristica', MWAuthentication.isAdmin, Validator.validarC
 adminRouter.get('/producto', MWAuthentication.isAdmin, adminController.vwProducto);
 
 // Ruta para crear un producto
-adminRouter.post('/crearproducto', (req:Request, res:Response, next:NextFunction)=>{
-  console.log(req.body)
-  next()
-}, MWAuthentication.isAdmin,upload.array('aFotografias', 5), Validator.validarProducto(),  adminController.createProducto);
+adminRouter.post('/crearproducto', MWAuthentication.isAdmin, upload.array('aFotografias', 5), Validator.validarProducto(),  adminController.createProducto);
 
 // Exporta el enrutador para su uso en otros archivos
 export default adminRouter;

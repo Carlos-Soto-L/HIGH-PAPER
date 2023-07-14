@@ -5,14 +5,11 @@ import DBmanipulation from '../class/cls_DBmanipulation';
 class viewsController {
 
     private static oToken:any;
-    /**
-     * Realiza un saludo.
-     * @returns {string} un saludo.
-     */
-    public static getSaludo(req: Request, res: Response) {
-        res.send('Hola !!');
-    }
 
+    /**
+     * Renderiza la vista inicio con el listado de los 10 mas recientes productos.
+     * @returns vista inicio.
+     */
     public static async getInicio(req: Request, res: Response) {
         const productosData = await DBmanipulation.obtenerLos10ProductosRecientes();
         console.log(productosData)
@@ -37,6 +34,10 @@ class viewsController {
         
     }
 
+    /**
+     * Renderiza la vista registro usuario.
+     * @returns vista registro.
+     */
     public static async getRegistro(req: Request, res: Response) {
         if (req.cookies.jwt) {
             viewsController.oToken = await Utils.isLogin(req.cookies.jwt);
@@ -50,6 +51,33 @@ class viewsController {
         }
         
     }
+
+        /**
+     * Retorna la información de un producto, por medio de su id.
+     * @returns renderiza la vista detalleproducto y le manda con ello, el objeto del producto.
+     */
+        public static async getDetalleProducto(req: Request, res: Response) {
+
+            try {
+                const idProducto = req.params.id;
+                const oProducto = await DBmanipulation.obtenerProducto(idProducto);
+                const oCaracteristicas = await DBmanipulation.obtenerRegistros("cCaracteristica");
+                if (req.cookies.jwt) {
+                    viewsController.oToken = await Utils.isLogin(req.cookies.jwt);
+                    if (viewsController.oToken != null) {
+                        res.render("detalleproducto",{ producto: oProducto, caract: oCaracteristicas, activar:false, mensaje:null, isLogin:true})
+                    }else{
+                        res.render("detalleproducto", { producto: oProducto, caract: oCaracteristicas, activar:false, mensaje:null, isLogin:false });
+                    }
+                } else {
+                    res.render("detalleproducto", { producto: oProducto, caract: oCaracteristicas, activar:false, mensaje:null, isLogin:false });
+                }
+    
+            } catch (error) {
+                console.log(error)
+            }
+            
+        }
 
 
 }
