@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Utils from '../class/cls_utils'
+import DBmanipulation from '../class/cls_DBmanipulation';
 
 class viewsController {
 
@@ -13,11 +14,13 @@ class viewsController {
     }
 
     public static async getInicio(req: Request, res: Response) {
+        const productosData = await DBmanipulation.obtenerLos10ProductosRecientes();
+        console.log(productosData)
         if (req.cookies.jwt) {
             viewsController.oToken = await Utils.isLogin(req.cookies.jwt);
             if (viewsController.oToken != null) {
                 if (viewsController.oToken._doc.iRol == 1) {
-                    res.render('inicio', { isLogin:true });
+                    res.render('inicio', { isLogin:true, oProductos: productosData });
                 }else if(viewsController.oToken._doc.iRol == 2){
                     res.render('admin/vw_inicio');
                 }else{
@@ -25,10 +28,10 @@ class viewsController {
                 }
                 
             }else{
-                res.render('inicio', { isLogin:false });
+                res.render('inicio', { isLogin:false, oProductos: productosData });
             }
         } else {
-            res.render('inicio', { isLogin:false });
+            res.render('inicio', { isLogin:false, oProductos: productosData });
         }
         
         

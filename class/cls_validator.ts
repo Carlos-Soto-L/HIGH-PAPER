@@ -209,4 +209,76 @@ export class Validator {
     ];
   }
 
+
+    /**
+ * Middleware para validar los datos de entrada para el proceso de dar de alta un nuevo producto.
+ * @returns retorna una respuesta con código 400 si no se comple las validaciones, si no, sigue con el siguiente proceso.
+ */
+    public static validarProducto() {
+      return [
+        body('sNombre')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('El nombre es requerido')
+        .isLength({ min: 3, max: 50 })
+        .withMessage('Por favor, ingrese su nombre de forma correcta')
+        .custom((value) => {
+          const regex = /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚ]+$/;
+      
+          if (!regex.test(value)) {
+            throw new Error('El nombre del producto contiene signos');
+          }else{
+            return true;
+          }}),
+        body('sDescripcion')
+        .trim()
+        .not()
+        .isEmpty()
+        .withMessage('El campo descripción nombre es requerido')
+        .isLength({ max: 100 })
+        .withMessage('Respete los maximos del campo descripción.')
+        .custom((value) => {
+          const regex = /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]+$/;
+      
+          if (!regex.test(value)) {
+            throw new Error('El campo descripción contiene signos');
+          }else{
+            return true;
+          }}),
+        body('aCategorias')
+        .not().isEmpty().withMessage('Se debe de especificar al menos una categoría.'),
+        body('iCantidadExistencia')
+        .notEmpty().withMessage('El campo cantidad existencia no puede estar vacío')
+        .isNumeric().withMessage('El campo cantidad existencia debe ser numérico')
+        .custom(value => value !== 0).withMessage('El campo cantidad existencia no puede ser 0'),
+        body('iPrecio')
+        .notEmpty().withMessage('El campo precio no puede estar vacío')
+        .isNumeric().withMessage('El campo precio debe ser numérico')
+        .custom(value => value !== 0).withMessage('El campo precio no puede ser 0'),
+        body('aCaracteristica')
+        .isArray({ min: 1 }).withMessage('Debe ser un arreglo con al menos un valor')
+        .custom(values => {
+          for (const value of values) {
+            if (value.length > 50 || /[^A-Za-z0-9\s]/.test(value)) {
+              throw new Error('Cada característica debe tener como máximo 50 caracteres (sin signos)');
+            }
+          }
+          return true;
+        }),
+        (req: Request, res: Response, next: NextFunction) => {
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+            return res.status(400).json({
+              status:0, 
+              mensaje: errors.array()[0].msg
+            });
+          }
+          else{
+            next();
+          }
+        },
+      ];
+    }
+
 }

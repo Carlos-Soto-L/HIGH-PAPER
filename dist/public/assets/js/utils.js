@@ -15,6 +15,7 @@ function limpiarFormulario(sIDFormulario) {
             case "textarea":
             case "number":
             case "date":
+            case "file":
             elemento.value = "";
             break;
             case "checkbox":

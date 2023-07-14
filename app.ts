@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import viewsRouter from './routers/rtr_router';
 import adminRouter from './routers/rtr_admin';
 
+
 var path = require('path');
 
 const app = express();

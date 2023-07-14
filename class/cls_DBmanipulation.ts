@@ -2,6 +2,8 @@ import User from '../models/mdl_user';
 import LstNegraJWT from '../models/mdl_cListaNegraJWT';
 import Categoria from '../models/mdl_cCategoria';
 import Caracteristica from '../models/mdl_cCaracteristica';
+import Producto from '../models/mdl_cProducto';
+
 
 
 
@@ -31,6 +33,9 @@ export default class DBmanipulation{
             break;
           case "cCaracteristica":
             this.oDocumento = new Caracteristica(oObject);
+            break;
+          case "cProducto":
+            this.oDocumento = new Producto(oObject);
             break;
           // TO DO: Instanciar el objeto documento con las demas clases ...
           default:
@@ -126,5 +131,71 @@ export default class DBmanipulation{
     }
 
   }
+
+    /**
+ * Método para obtener todos los registros de una colección.
+ *
+ * @param sColeccion Nombre de la colección.
+ * @returns Datos de la colección, en caso contrario, retorna null.
+ */
+    public static async obtenerRegistros(sColeccion: string){
+      try {
+        switch (sColeccion) {
+          case "cUsuario":
+            this.oResultado = await User.find({}).exec();
+            break;
+          case "cCategoria":
+            this.oResultado = await Categoria.find({}).exec();
+            break;
+          case "cCaracteristica":
+            this.oResultado = await Caracteristica.find({}).exec();
+            break;
+          case "cProducto":
+            this.oResultado = await Producto.find({}).exec();
+            break;
+          // TO DO: Instanciar el objeto documento con las demas clases ...
+          default:
+            break;
+        }
+        
+      } catch (error) {
+        console.log(error)
+      } finally{
+        if (this.oResultado[0] != null) {
+          return this.oResultado;
+        } else {
+          this.oResultado = null;
+          return null;
+        }
+        
+      }
+    }
+
+
+    public static async obtenerLos10ProductosRecientes(){
+      try {
+        this.oResultado =  await Producto.find({})
+        .sort({ _id: -1 })
+        .limit(10)
+        .exec();
+      } catch (error) {
+        console.log(error)
+      }finally{
+        if (this.oResultado[0] != null) {
+          return this.oResultado;
+        } else {
+          this.oResultado = null;
+          return null;
+        }
+        
+      }
+
+
+
+    }
+
 }
+
+
+
 
