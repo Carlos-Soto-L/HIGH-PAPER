@@ -13,22 +13,31 @@ class viewsController {
     }
 
     public static async getInicio(req: Request, res: Response) {
+        let oDataUser = {
+            "isLogin":false,
+            "sFoto": null
+        }
         if (req.cookies.jwt) {
             viewsController.oToken = await Utils.isLogin(req.cookies.jwt);
             if (viewsController.oToken != null) {
-                if (viewsController.oToken._doc.iRol == 1) {
-                    res.render('inicio', { isLogin:true });
-                }else if(viewsController.oToken._doc.iRol == 2){
+                const oData = viewsController.oToken._doc;
+                oDataUser = {
+                    "isLogin":true,
+                    "sFoto": oData.sFoto
+                }
+                if (oData.iRol == 1) {
+                    res.render('inicio', { oUser: oDataUser });
+                }else if(oData.iRol == 2){
                     res.render('admin/vw_inicio');
                 }else{
                     // TO DO: Renderizar pagina de inicio del usuario vendedor.
                 }
                 
             }else{
-                res.render('inicio', { isLogin:false });
+                res.render('inicio', { oUser: oDataUser });
             }
         } else {
-            res.render('inicio', { isLogin:false });
+            res.render('inicio', { oUser: oDataUser });
         }
         
         
@@ -48,6 +57,9 @@ class viewsController {
         
     }
 
+    public static getPerfil(req: Request, res: Response) {
+        res.render('general/vw_perfil', {activar:false, mensaje:null});
+    }
 
 }
 

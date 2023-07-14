@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import DBmanipulation from '../class/cls_DBmanipulation';
 import bcrypt from 'bcryptjs';
+import User from '../models/mdl_user';
 
 class userController {
     public static getRegistro(req: Request, res: Response) {
@@ -24,6 +25,7 @@ class userController {
                 sTelefono: sTelefono,
                 sPassword: sPassword,
                 iRol: 1,
+                sFoto: "assets/img/img_defaultUser.PNG"
             }
 
             await DBmanipulation.insertarDocumento(oUser, "cUsuario");
@@ -42,6 +44,19 @@ class userController {
         }
 
     }
+
+    public static getDatosActualizar = (req: Request, res: Response) => {
+      const id = req.params.id
+      User.find({_id: id}, (err, result) =>{
+          if (err) {
+              console.log('Ha ocurrido un error: '+err)
+          } else {
+              console.log(result)
+              res.render('vw_perfil', {user:result})
+              
+          }
+      })
+  }
 
 }
 

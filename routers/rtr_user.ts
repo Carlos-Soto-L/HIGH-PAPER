@@ -8,5 +8,7 @@ userRouter.post('/registro', Validator.validarRegistro(), userController.inserta
 
 userRouter.get('/registro',  userController.getRegistro);
 
+userRouter.post('/actualizar/:id', userController.getDatosActualizar);
+
 // Exporta el enrutador para su uso en otros archivos
 export default userRouter;
