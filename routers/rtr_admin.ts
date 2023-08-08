@@ -50,5 +50,45 @@ adminRouter.get('/producto', MWAuthentication.isAdmin, adminController.vwProduct
 // Ruta para crear un producto
 adminRouter.post('/crearproducto', MWAuthentication.isAdmin, upload.array('aFotografias', 5), Validator.validarProducto(),  adminController.createProducto);
 
+// Ruta para administrar los productos
+adminRouter.get('/administrar_productos', MWAuthentication.isAdmin, adminController.mostrarproductos);
+
+// Ruta para editar un producto por su id
+adminRouter.get('/editarproducto/:id', MWAuthentication.isAdmin, adminController.editarproducto);
+
+// Ruta para editar las fotografias un producto por su id
+adminRouter.post('/editarfotosproductos/:id', MWAuthentication.isAdmin, upload.array('aFotografias', 5), adminController.editarfotosproducto);
+
+// Ruta para editar los detalles un producto
+adminRouter.post('/editardetallesproducto', MWAuthentication.isAdmin, adminController.editardetallesproducto);
+
+// Ruta para eliminar un producto por su id
+adminRouter.get('/eliminarproducto/:id', MWAuthentication.isAdmin, adminController.eliminarproducto);
+
+// Ruta para administrar categorias
+adminRouter.get('/administrar_categorias', MWAuthentication.isAdmin, adminController.mostrarcategorias);
+
+// Ruta para editar una categoria
+adminRouter.get('/editarcategoria/:id', MWAuthentication.isAdmin, adminController.editarcategorias);
+
+// Ruta para actualizar una categoria
+adminRouter.post('/editarcategorias', MWAuthentication.isAdmin, Validator.validarCategoria(), adminController.actualizarcategorias);
+
+// Ruta para eliminar una categoria
+adminRouter.get('/eliminarcategoria/:id/:categoria', MWAuthentication.isAdmin, adminController.eliminarcategorias);
+
+// Ruta para administrar las caracteristicas 
+adminRouter.get('/administrar_caracteristicas', MWAuthentication.isAdmin, adminController.mostrarcaracteristicas);
+
+// Ruta para editar una caracteristica
+adminRouter.get('/editarcaracteristica/:id', MWAuthentication.isAdmin, adminController.editarcaracteristica);
+
+// Ruta para actualizar una caracteristica
+adminRouter.post('/editarcaracteristica', MWAuthentication.isAdmin, Validator.validarCaracteristica(), adminController.actualizarcaracteristica);
+
+// Eliminar caracteristica
+adminRouter.get('/eliminarcaracteristica/:id/:sCaracteristica', MWAuthentication.isAdmin, adminController.eliminarcaracteristica);
+
+
 // Exporta el enrutador para su uso en otros archivos
 export default adminRouter;

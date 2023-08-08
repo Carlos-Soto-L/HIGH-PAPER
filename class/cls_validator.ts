@@ -150,7 +150,7 @@ export class Validator {
       .isLength({ min: 3, max: 25 })
       .withMessage('Por favor, ingrese el nombre de la categoría de forma correcta')
       .matches(/^[a-zA-Z]+$/)
-      .withMessage('La categoría materno solo debe contener letras')
+      .withMessage('La categoría solo debe contener letras')
       .custom(async (value) => {
         const correoExistente = await DBmanipulation.verificarExistenciaValor(value.toString(), "sCategoria" , "cCategoria");
         if (correoExistente) {
@@ -187,7 +187,7 @@ export class Validator {
       .isLength({ min: 3, max: 25 })
       .withMessage('Por favor, ingrese el nombre de la Característica de forma correcta')
       .matches(/^[a-zA-Z]+$/)
-      .withMessage('La Característica materno solo debe contener letras')
+      .withMessage('La Característica solo debe contener letras')
       .custom(async (value) => {
         const correoExistente = await DBmanipulation.verificarExistenciaValor(value.toString(), "sCaracteristica" , "cCaracteristica");
         if (correoExistente) {

@@ -62,6 +62,9 @@ class viewsController {
                 const idProducto = req.params.id;
                 const oProducto = await DBmanipulation.obtenerProducto(idProducto);
                 const oCaracteristicas = await DBmanipulation.obtenerRegistros("cCaracteristica");
+                console.log("detalles")
+                console.log(oProducto)
+                console.log(oCaracteristicas)
                 if (req.cookies.jwt) {
                     viewsController.oToken = await Utils.isLogin(req.cookies.jwt);
                     if (viewsController.oToken != null) {

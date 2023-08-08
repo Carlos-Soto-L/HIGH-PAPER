@@ -1,10 +1,8 @@
-import { limpiarFormulario } from './utils.js';
+const eformCategoria = document.getElementById('editcaracteristicaform');
 
-const formCategoria = document.getElementById('categoriaform');
-
-formCategoria.addEventListener('submit', async (e) => {
+eformCategoria.addEventListener('submit', async (e) => {
   e.preventDefault(); // Evita que se envíe la solicitud de forma convencional
-  const formData = new FormData(formCategoria);
+  const formData = new FormData(eformCategoria);
   const data = {};
 
   // Agregar valores de formulario a objeto JSON
@@ -13,7 +11,7 @@ formCategoria.addEventListener('submit', async (e) => {
   }
 
   try {
-    const response = await fetch("/admin/categorias", {
+    const response = await fetch("/admin/editarcaracteristica", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -24,7 +22,6 @@ formCategoria.addEventListener('submit', async (e) => {
     if (datos.status == 0) {
         alertify.notify(datos.mensaje, 'error', 5, function(){  /*console.log('dismissed');*/ });
     }else if (datos.status == 1) {
-      limpiarFormulario('categoriaform');
       alertify.notify(datos.mensaje, 'success', 5, function(){  /*console.log('dismissed');*/ });
     }else{
         console.log(error)
@@ -34,7 +31,3 @@ formCategoria.addEventListener('submit', async (e) => {
     console.error(error);
   }
 });
-
-
-
-
