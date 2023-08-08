@@ -7,59 +7,72 @@
 </head>
 <body>
     <%- include('templates/vw_encabezadoGeneral', {login: isLogin}) %>
+    <div class="row" style="width: 100%;">
+      <div class="col-5" style="padding: 0px;">
+        <!-- CARRUSEL  -->
 
-    <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel" style="width: 50%; margin: 20px auto;">
-        <div class="carousel-inner">
-            <% producto[0].aFotos.forEach((fotoSRC)=>{ %>
-                <div class="carousel-item active" data-bs-interval="10000">
-                    <img src="<%= fotoSRC %>" class="d-block w-100" alt="...">
-            </div>
-            <% }) %>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          Detalles del producto
+        <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel" style="width: 50%; margin: 20px auto;">
+          <div class="carousel-inner">
+              <% producto[0].aFotos.forEach((fotoSRC)=>{ %>
+                  <div class="carousel-item active" data-bs-interval="10000">
+                      <img src="<%= fotoSRC %>" class="d-block w-100" alt="...">
+              </div>
+              <% }) %>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
         </div>
-        <div class="card-body">
-          <h5 class="card-title"><%= producto[0].sNombre %></h5>
-          <p class="card-text"><%= producto[0].sDescripcion %></p>
+        </div>
 
-          <p class="card-text"><span style="font-weight: bold;">Total en existencia: </span><%= producto[0].iCantidadExistencia %></p>
-          <p class="card-text"><span style="font-weight: bold;">Precio: </span><%= producto[0].iPrecio %></p>
 
-          <a href="#" class="btn btn-primary" style="float: right;">Añadir al carrito</a>
-          <div style="clear: both;"></div>
-          <p>Características del producto</p>
-          <div class="row">
-            <ul class="list-group col-3">
-              <% caract.forEach((cart)=>{ %>
-              <li class="list-group-item" style="font-weight: bold;"><%= cart.sCaracteristica %></li>
-              <% }) %>
-            </ul>
+      </div>
 
-            <ul class="list-group col-9">
-              <% producto[0].aCaracteristicas.forEach((caract)=>{ %>
-                <% if(caract != null && caract != ""){ %>
-                  <li class="list-group-item"><%= caract %></li>
-                  <% }else{ %>
-                    <li class="list-group-item">----</li>
-                    <% } %>
-              <% }) %>
-            </ul>
+      <div class="col-6" style="padding: 0px;">
+        <div class="card" style="margin-top: 20px;">
+          <div class="card-header">
+            Detalles del producto
           </div>
+          <div class="card-body">
+            <h5 class="card-title"><%= producto[0].sNombre %></h5>
+            <p class="card-text"><%= producto[0].sDescripcion %></p>
+  
+            <p class="card-text"><span style="font-weight: bold;">Total en existencia: </span><%= producto[0].iCantidadExistencia %></p>
+            <p class="card-text"><span style="font-weight: bold;">Precio: </span><%= producto[0].iPrecio %></p>
+  
+            <a href="#" class="btn btn-primary" style="float: right;">Añadir al carrito</a>
+            <div style="clear: both;"></div>
+            <p>Características del producto</p>
+            <div class="row">
 
+              <ul class="list-group col-12">
+
+                <% producto[0].aCaracteristicas.forEach((objeto) => { %>
+                    <% if(objeto.sValor  != null && objeto.sValor != ""){ %>
+                      <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default"><%= objeto.sCaracteristica  %></span>
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="<%= objeto.sValor  %>" disabled>
+                      </div>
+                    <% } %>
+                    <% }); %>
+
+              </ul>
+            </div>
+  
+          </div>
         </div>
+
       </div>
+      
+    </div>
+  <div style="margin-top: 100px;"></div>
+
+
+
 
     <%- include('templates/vw_footerGeneral') %>
 </body>

@@ -141,7 +141,15 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+dist/public/assets/img/
+dist/app.js
+dist/app.js.map
+dist/class/
+dist/controllers/
+dist/middlewares/
+dist/models/
+dist/routers/
+dist/services/
 
 # Gatsby files
 .cache/

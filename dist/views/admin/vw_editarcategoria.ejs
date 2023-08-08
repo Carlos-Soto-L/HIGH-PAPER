@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categoría</title>
+</head>
+<body>
+    <%- include('../templates/vw_encabezadoAdmin') %>
+
+    <% if(categ){ %>
+    
+    <div class="row register-form" style="width: 100%;">
+        <div class="col-md-8 offset-md-2">
+            <form class="custom-form" method="post" id="editarcategoriaform">
+                <h1>Editar categoria</h1>
+                <div class="row form-group ps-0">
+                    <div class="col-sm-4 label-column"><label class="col-form-label col-form-label" for="name-input-field"><span class="text-danger">* </span>Nombre categoría</label></div>
+                    <div class="col-sm-6 input-column"><input class="form-control form-control" type="text" name="sCategoria" value="<%= categ[0].sCategoria %>" aria-describedby="nameHelp"></div>
+                    <div id="nameHelp" class="form-text"><ul><li>Debe tener un máximo de 25 caracteres y un mínimo de 3.</li></ul></div>
+                </div>
+                <input type="text" value="<%= categ[0]._id %>" name="sId" style="display: none;">
+                <input type="text" value="<%= categ[0].sCategoria %>" name="sCategoriaAntigua" style="display: none;">
+                <button class="btn btn-light submit-button" type="submit">Editar</button>
+            </form>
+        </div>
+    </div>
+
+    
+    <script src="/assets/js/categoriaeditar.js" type="module"></script>
+
+    
+
+    <% }else{ %>
+        <h1 style="width: 200px; display: block; margin: 200px auto;">CATEGORÍA NO ENCONTRADA</h1>
+    <% } %>
+
+        <%- include('../templates/vw_footerGeneral') %>
+
+</body>
+</html>

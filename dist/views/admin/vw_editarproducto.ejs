@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/css/multi-select-tag.css">
+    <title>Editar</title>
+</head>
+<body>
+
+    <%- include('../templates/vw_encabezadoAdmin') %>
+
+      <% try{ %>
+
+
+        <div class="row" style="width: 100%;">
+          <div class="col-5" style="padding: 0px;">
+            <!-- CARRUSEL  -->
+    
+            <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel" style="width: 50%; margin: 20px auto;">
+              <div class="carousel-inner">
+                  <% producto[0].aFotos.forEach((fotoSRC)=>{ %>
+                      <div class="carousel-item active" data-bs-interval="10000">
+                          <img src="<%= fotoSRC %>" class="d-block w-100" alt="...">
+                  </div>
+                  <% }) %>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+            </div>
+
+            <form action="/admin/editarfotosproductos/<%= producto[0]._id %>" method="post" enctype="multipart/form-data" style="width: 80%; margin: 10px auto;">
+              <div class="row form-group ps-0" >
+                <div class="col-sm-4 label-column"><label class="col-form-label col-form-label" for="name-input-field"><span class="text-danger">* </span>Foto</label></div>
+                <div class="col-sm-6 input-column"><input class="form-control" type="file" id="aFotografias" multiple  aria-describedby="nameHelp" name="aFotografias" accept="image/png, image/jpeg" required></div>
+                <div id="nameHelp" class="form-text"><ul><li>La fotografía debe estar en formato PNG o JPEG.</li>
+                  <li>Máximo 5 fotos</li></ul></div>
+              </div>
+              <button type="submit" class="btn btn-primary" style="display: block; width: 100px; margin: 50px auto;">
+                Enviar
+            </button>
+            </form>
+
+    
+          </div>
+    
+          <div class="col-6" style="padding: 0px;">
+            <form method="post" action="/admin/editardetallesproducto">
+            <div class="card" style="margin-top: 20px;">
+              
+              <div class="card-header">
+                Detalles del producto
+              </div>
+              <div class="card-body">
+    <button type="button" class="btn " style="float: right; position: relative; top: 0px; right: 30px; background-color: #1C232E; margin-bottom: 20px;"> <a href="/admin/administrar_productos" style="text-decoration: none; color: aliceblue;">Administrar productos</a></button>
+                <div style="clear: both;"></div>
+
+                  <div class="input-group mb-3">
+                      <span class="input-group-text" id="inputGroup-sizing-default">Nombre</span>
+                      <input type="text" class="form-control" aria-label="Sizing example input" name="sNombre" aria-describedby="inputGroup-sizing-default" value="<%= producto[0].sNombre %>">
+                    </div>
+
+
+                <div class="input-group">
+                  <span class="input-group-text">Descripción</span>
+                  <textarea class="form-control" aria-label="With textarea" name="sDescripcion" ><%= producto[0].sDescripcion %></textarea>
+                </div>
+
+                <div style="margin: 15px auto;"></div>
+
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="inputGroup-sizing-default">Total en existencia</span>
+                  <input type="number" class="form-control" aria-label="Sizing example input" name="iCantidadExistencia" aria-describedby="inputGroup-sizing-default" value="<%= producto[0].iCantidadExistencia %>">
+                </div>
+
+
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="inputGroup-sizing-default">Precio</span>
+                  <input type="number" class="form-control" aria-label="Sizing example input" name="iPrecio" aria-describedby="inputGroup-sizing-default" value="<%= producto[0].iPrecio %>">
+                </div>
+
+
+                <div style="clear: both;"></div>
+                <p>Categorías del producto</p>
+
+                <% var categoriasproducto = producto[0].aCategorias %>
+
+                <div class="row form-group ps-0">
+                  <div class="col-sm-4 label-column"><label class="col-form-label col-form-label" for="name-input-field"><span class="text-danger">* </span>Categorías:</label></div>
+                  <div class="col-sm-6 input-column">
+                      <select name="aCategorias" id="aCategorias" multiple required>
+                          <%if(categorias != null){ %>
+                              <% categorias.forEach(function(categoria){ %>
+                                <% if (categoriasproducto.includes(categoria.sCategoria)) { %>
+                                  <option value="<%= categoria.sCategoria %>" selected><%= categoria.sCategoria %></option>
+                                  <% }else{  %>
+                                    <option value="<%= categoria.sCategoria %>"><%= categoria.sCategoria %></option>
+                                    <% } %>
+                                <% }); %>
+                              <% } %>
+                      </select>
+                  </div>
+              </div>
+
+      
+                <div style="clear: both;"></div>
+                <p>Características del producto</p>
+                <div class="row">
+
+                  <% var inputfaltantes = caract.length - producto[0].aCaracteristicas.length %>
+      
+                  <ul class="list-group col-12">
+                    <% producto[0].aCaracteristicas.forEach((objeto) => { %>
+                        <% if(objeto.sValor  != null && objeto.sValor != ""){ %>
+                          <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default"><%= objeto.sCaracteristica  %></span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" name="aCaracteristica" aria-describedby="inputGroup-sizing-default" value="<%= objeto.sValor  %>">
+                          </div>
+                        <% }else{ %>
+                          <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default"><%= objeto.sCaracteristica  %></span>
+                            <input type="text" class="form-control" aria-label="Sizing example input" name="aCaracteristica" aria-describedby="inputGroup-sizing-default">
+                          </div>
+                       <% } %>
+                        <% }); %>
+                    
+
+                    <% var contador2 = producto[0].aCaracteristicas.length - 1 %>
+                    <% if(inputfaltantes != 0){ %>
+                      <% for (let i = inputfaltantes; i > 0; i--) { %>
+                          <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default"><%= caract[contador2 + 1].sCaracteristica %></span>
+                              <input type="text" class="form-control" aria-label="Sizing example input" name="aCaracteristica" aria-describedby="inputGroup-sizing-default">
+                            </div>
+
+                            <% contador2++ %>
+                            <% } %>
+                  <% } %>
+                  </ul>
+                </div>
+
+                <input type="text" name="sId" id="" value="<%= producto[0]._id %>" style="display: none;">
+      
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="display: block; width: 100px; margin: 20px auto;">
+                Enviar
+             </button>
+
+             </div>
+           </form>
+          </div>
+          
+        </div>
+
+        <div style="margin-top: 50px;"></div>
+
+        <script type="module" src="/assets/js/editarproducto.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/js/multi-select-tag.js"></script>
+
+
+    
+        <%- include('../templates/vw_footerGeneral') %>
+
+      <% }catch(error){ %>
+
+      
+
+          <h1>PRODUCTO NO ENCONTRADO</h1>
+
+
+
+
+      <% } %>
+
+
+
+</body>
+</html>
