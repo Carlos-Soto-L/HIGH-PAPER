@@ -1,6 +1,7 @@
 import express from 'express'
 import userController from '../controllers/ctrls_user'
 import { Validator } from '../class/cls_validator'
+import MWAuthentication from '../middlewares/mw_authentication';
 
 const userRouter = express.Router();
 
@@ -9,6 +10,20 @@ userRouter.post('/registro', Validator.validarRegistro(), userController.inserta
 
 // Ruta para renderizar la vista registro
 userRouter.get('/registro',  userController.getRegistro);
+
+
+// Ruta para agregar un producto al carrito de compra
+userRouter.post('/agregaritemcarrito', MWAuthentication.isCliente,  userController.agregarproductocarrito);
+
+// Ruta para agregar un producto al carrito de compra
+userRouter.get('/carritoCompra', MWAuthentication.isCliente,  userController.verCarritoCompra);
+
+// Ruta para actualizar los productos en carrito de compra 
+userRouter.post('/actualizarproductocarrito/:idproducto', MWAuthentication.isCliente,  userController.actualizarproductocarrito);
+
+// Ruta para eliminar un producto del carrito de compra
+userRouter.get('/eliminarproductocarrito/:idcarrito/:idproducto', MWAuthentication.isCliente,  userController.eliminarproductocarrito);
+
 
 // Exporta el enrutador para su uso en otros archivos
 export default userRouter;

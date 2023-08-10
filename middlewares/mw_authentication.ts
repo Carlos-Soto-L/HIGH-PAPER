@@ -46,6 +46,7 @@ class MWAuthentication {
 
     if (isValido !== false) {
       if (isValido._doc.iRol == 1) {
+        req.body.sIdCliente = isValido._doc._id;
         next();
       } else {
         // No es un usuario cliente.

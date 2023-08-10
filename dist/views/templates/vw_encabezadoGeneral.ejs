@@ -6,8 +6,8 @@
     <title>Document</title>
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/fonts/fontawesome-all.min.css">
-    <link rel="stylesheet" href="/assets/css/styles.min.css">
-    <link rel="stylesheet" href="Alertify/css/alertify.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.min.css" >
+    <link rel="stylesheet" href="/Alertify/css/alertify.min.css" type="text/css">
     <script src="/Alertify/alertify.min.js"></script>
 </head>
 <body>
@@ -22,7 +22,12 @@
       </button>
     <% } %>
     <a href="/"><img src="/assets/img/Logo.png" width="162" height="140" style="position: absolute;left: 0px;top: 0px;" class="ms-4"></a>
-    <i class="fas fa-shopping-cart" style="font-size: 30px;position: absolute;top: 90px;right: 4%;"></i>
+    <% if(login){ %>
+      <a href="/user/carritoCompra" style="color: black;">
+        <i class="fas fa-shopping-cart" style="font-size: 30px;position: absolute;top: 90px;right: 4%;"></i>
+      </a>
+      
+   <% } %>
     <i class="fas fa-user-circle d-xxl-flex justify-content-xxl-center align-items-xxl-center" style="font-size: 52px;position: absolute;top: 20px;right: 4%;--bs-body-font-size: -1rem;"></i>
     <nav class="navbar navbar-light navbar-expand-md" style="margin-bottom: 4px;margin-top: 147px;background-color: #0F684B;color: #fff;">
         <div class="container-fluid"><a class="navbar-brand" href="/" style="color: #fff;">Inicio</a>
