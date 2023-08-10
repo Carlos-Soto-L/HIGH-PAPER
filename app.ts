@@ -36,7 +36,10 @@ app.use('/user',userRouter);
 
 app.use('/admin',adminRouter);
 
-
+// Middleware para manejar la página 404
+app.use((req, res, next) => {
+  res.status(404).render("general/vw_404");
+});
 
 app.listen(port)
   .on('listening', () => {
