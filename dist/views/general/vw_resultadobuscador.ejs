@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIGH PAPER</title>
+</head>
+<body>
+    
+    <%- include('../templates/vw_encabezadoGeneral', {login: isLogin}) %>
+
+
+    <%if(oProductos != null){ %>
+    <h2 style="margin: 10px 0px 0px 50px;">RESULTADOS</h2>
+        <% let contador = 1; %>
+        <div class="card-group mt-4 mb-4">
+        <% oProductos.forEach(function(producto){ %>
+            <% if(contador/3 == 1){ %>
+                <div class="card ms-4 me-4"><img class="card-img-top w-100 d-block" src="<%= producto.aFotos[0] %>" style="max-width: 400px; margin: 0px auto;">
+                    <div class="card-body">
+                        <h4 class="card-title"><%= producto.sNombre %></h4>
+                        <p class="card-text"><%= producto.sDescripcion  %></p><button class="btn btn-primary" type="button"><a href="/detalleproducto/<%= producto._id %>" style="text-decoration: none; color: azure;">Ver mas</a></button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-group mt-4 mb-4">
+                <% contador = 1 %>
+            <% }else{ %>
+                <div class="card ms-4 me-4"><img class="card-img-top w-100 d-block" src="<%= producto.aFotos[0] %>" style="max-width: 400px; margin: 0px auto;">
+                    <div class="card-body">
+                        <h4 class="card-title"><%= producto.sNombre %></h4>
+                        <p class="card-text"><%= producto.sDescripcion  %></p><button class="btn btn-primary" type="button"><a href="/detalleproducto/<%= producto._id %>" style="text-decoration: none; color: azure;">Ver mas</a></button>
+                    </div>
+                </div>
+            <% } %>
+            <% contador = contador + 1 %>
+          <% }); %>
+        <% }else{ %>
+            <h3 style="text-align: center; margin-top: 50px;">No se encontraron resultados.</h3>
+            <div style="width: 100%; margin: 300px 0px;">
+
+            </div>
+            <% } %>
+    </div>
+
+    <%- include('../templates/vw_footerGeneral') %>
+
+
+</body>
+</html>

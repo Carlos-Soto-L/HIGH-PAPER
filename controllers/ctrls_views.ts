@@ -82,6 +82,25 @@ class viewsController {
             
         }
 
+        public static async getProductosBuscador(req: Request, res: Response){
+            const {sPalabra,  ...rest} = req.body;
+            const expresionRegular = new RegExp(sPalabra, "i");
+            let oFiltro = {"sNombre": expresionRegular}
+            const resultadoConsulta = await DBmanipulation.obtenerRegistrosFiltro(oFiltro  ,"cProducto");
+            console.log(resultadoConsulta)
+            if (req.cookies.jwt) {
+                viewsController.oToken = await Utils.isLogin(req.cookies.jwt);
+                if (viewsController.oToken != null) {
+                    res.render("general/vw_resultadobuscador",{oProductos: resultadoConsulta, isLogin:true});
+                }else{
+                    res.render("general/vw_resultadobuscador",{oProductos: resultadoConsulta, isLogin:false});
+                }
+            }else{
+                res.render("general/vw_resultadobuscador",{oProductos: resultadoConsulta, isLogin:false});
+            }
+            
+        }
+
 
 }
 

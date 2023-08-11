@@ -41,7 +41,14 @@
                       <li class="nav-item"><a class="nav-link" href="/registro">Registrate</a></li>
                     <% } %>
                 </ul>
-            </div><input type="search" class="me-3" placeholder="Buscar producto"><i class="fas fa-search me-4" style="font-size: 26px;"></i><button data-bs-target="#navcol-1" data-bs-toggle="collapse" class="navbar-toggler"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            </div>
+            <form action="/buscarproducto" method="post" id="formbuscador">
+              <input type="search" class="me-3" name="sPalabra" placeholder="Buscar producto" id="busquedaInput">
+                <i class="fas fa-search me-4" style="font-size: 26px;" id="iconoBusqueda"></i>
+              <button data-bs-target="#navcol-1" data-bs-toggle="collapse" class="navbar-toggler">
+                <span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span>
+              </button>
+            </form>
         </div>
     </nav>
     
@@ -71,6 +78,28 @@
         </div>
         </form>
     </div>
+
+    <script>
+      
+      document.getElementById("iconoBusqueda").addEventListener("click", function() {
+        var valorInput = document.getElementById("busquedaInput").value;
+        if (!valorInput) {
+          alertify.notify("Por favor, introduce una palabra.", 'error', 5, function(){  console.log('dismissed'); });
+        } else {
+          document.getElementById("formbuscador").submit();
+        }
+      });
+
+      document.getElementById("formbuscador").addEventListener("submit", function(event) {
+        var valorInput = document.getElementById("busquedaInput").value;
+        event.preventDefault(); // Evita el envío del formulario por defecto
+        if (!valorInput) {
+          alertify.notify("Por favor, introduce una palabra.", 'error', 5, function(){  console.log('dismissed'); });
+        } else {
+          document.getElementById("formbuscador").submit();
+        }
+      });
+      </script>
 
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="/assets/js/login.js"></script>
