@@ -3,6 +3,8 @@ import LstNegraJWT from '../models/mdl_cListaNegraJWT';
 import Categoria from '../models/mdl_cCategoria';
 import Caracteristica from '../models/mdl_cCaracteristica';
 import Producto from '../models/mdl_cProducto';
+import CarritoCompra from '../models/mdl_cCarritoCompra';
+import mongoose from 'mongoose';
 
 
 
@@ -37,6 +39,10 @@ export default class DBmanipulation{
           case "cProducto":
             this.oDocumento = new Producto(oObject);
             break;
+          case "cCarritoCompra":
+            this.oDocumento = new CarritoCompra(oObject);
+            break;
+
           // TO DO: Instanciar el objeto documento con las demas clases ...
           default:
             break;
@@ -65,6 +71,9 @@ export default class DBmanipulation{
             break;
           case "cProducto":
             this.oResultado = await Producto.find({_id:sId}).exec();
+            break;
+          case "cCarritoCompra":
+            this.oResultado = await CarritoCompra.find({_id:sId}).exec();
             break;
           // TO DO: Instanciar el objeto documento con las demas clases ...
           default:
@@ -102,6 +111,9 @@ export default class DBmanipulation{
           break;
         case "cCaracteristica":
           this.oResultado = await Caracteristica.find({ [sAtributo]: sValor }).exec();
+          break;
+        case "cCarritoCompra":
+          this.oResultado = await CarritoCompra.find({ [sAtributo]: sValor }).exec();
           break;
         // TO DO: Instanciar el objeto documento con las demas clases ...
         default:
@@ -206,6 +218,50 @@ export default class DBmanipulation{
         
       }
     }
+
+
+        /**
+ * Método para obtener todos los registros de una colección.
+ *
+ * @param sColeccion Nombre de la colección.
+ * @param oFiltros Filtros a aplicar.
+ * @returns Datos de la colección, en caso contrario, retorna null.
+ */
+        public static async obtenerRegistrosFiltro(oFiltros:Object,sColeccion: string){
+          try {
+            switch (sColeccion) {
+              case "cUsuario":
+                this.oResultado = await User.find(oFiltros).exec();
+                break;
+              case "cCategoria":
+                this.oResultado = await Categoria.find(oFiltros).exec();
+                break;
+              case "cCaracteristica":
+                this.oResultado = await Caracteristica.find(oFiltros).exec();
+                break;
+              case "cProducto":
+                this.oResultado = await Producto.find(oFiltros).exec();
+                break;
+              case "cCarritoCompra":
+                this.oResultado = await CarritoCompra.find(oFiltros).exec();
+                break;
+              // TO DO: Instanciar el objeto documento con las demas clases ...
+              default:
+                break;
+            }
+            
+          } catch (error) {
+            console.log(error)
+          } finally{
+            if (this.oResultado[0] != null) {
+              return this.oResultado;
+            } else {
+              this.oResultado = null;
+              return null;
+            }
+            
+          }
+        }
 
 
   /**
@@ -334,6 +390,9 @@ export default class DBmanipulation{
         case "cCaracteristica":
           resultado = await Caracteristica.findByIdAndDelete(sId);
           break;
+        case "cCarritoCompra":
+          resultado = await CarritoCompra.findByIdAndDelete(sId);
+          break;
     
         default:
           break;
@@ -440,6 +499,209 @@ export default class DBmanipulation{
           this.oResultado = 0;
         }
       }
+
+
+    public static async agregarCantidadProductosCarritoCliente(sIdCliente:string, sIdProducto:string, sUnidadesProducto:string, oNuevoProducto:Object){
+      let resultado = 1;
+      let sTotalUnidades;
+      let iNuevoTotal;
+      let idCarritoCompra;
+      let iTotalActual;
+
+      // consultar el producto 
+
+      try {
+        const carrito = await CarritoCompra.findOne({ "oIdUsuario": sIdCliente});
+        if (carrito) {
+          idCarritoCompra = carrito._id;
+          iTotalActual = carrito.iTotal;
+
+          const productoColeccion = await CarritoCompra.findOne({ "oIdUsuario": sIdCliente, "aProductos.sIdProducto": sIdProducto });
+
+          if (productoColeccion != null) {
+
+            const producto = productoColeccion.aProductos.find(item => item['sIdProducto'] === sIdProducto);
+            // if (producto) {
+              console.log('Producto encontrado:');
+              sTotalUnidades = parseInt(producto['sUnidadesProducto'], 10) + parseInt(sUnidadesProducto, 10);
+              iNuevoTotal = parseFloat(producto['iPrecioProducto']) * parseInt(sUnidadesProducto, 10);
+    
+            // Realiza la actualización
+            await CarritoCompra.updateOne(
+              {
+                "oIdUsuario": sIdCliente,
+                "aProductos.sIdProducto": sIdProducto
+              },
+              {
+                "$set": {
+                  "aProductos.$[element].sUnidadesProducto": sTotalUnidades + ""
+                },
+                "$inc":{"iTotal": iNuevoTotal}
+              },
+              {
+                arrayFilters: [
+                  { "element.sIdProducto": sIdProducto }
+                ]
+              }
+            );
+  
+  
+          } else {
+            console.log('Producto no encontrado en el carrito.');
+
+            console.log(oNuevoProducto)
+
+            // Se agrega el producto al carrito de compra del usuario
+            let iAgregado = parseFloat(oNuevoProducto['iPrecioProducto']) * parseFloat(oNuevoProducto['sUnidadesProducto']);
+
+            console.log(iAgregado)
+
+
+            await CarritoCompra.updateOne(
+              { "_id": idCarritoCompra }, // Filtra el documento que deseas actualizar
+              {
+                "$push": {
+                  "aProductos": oNuevoProducto
+                },
+                "$inc": { "iTotal": iAgregado } // Actualiza el campo iTotal sumando el precio del nuevo producto
+              }
+           );
+  
+          }
+        } else {
+          console.log('Carrito no encontrado para el usuario.');
+        }
+      } catch (error) {
+        resultado = 0;
+      }
+
+      return resultado;
+
+    }
+
+    public static async actualizarproductocarrito(sIdCliente:string, sIdProducto:string, sUnidadesProducto:string, sActualizadoUnidadesProducto:string){
+      try {
+        let iTotalUnidades;
+        let iNuevoTotal;
+        let iDiferencia;
+        let iTotalActual;
+
+        const productoColeccion = await CarritoCompra.findOne({ "oIdUsuario": sIdCliente, "aProductos.sIdProducto": sIdProducto });
+
+        if (productoColeccion != null) {
+
+            const producto = productoColeccion.aProductos.find(item => item['sIdProducto'] === sIdProducto);
+
+            iTotalActual = productoColeccion['iTotal'];
+
+              if(parseInt(sUnidadesProducto,10) > parseInt(sActualizadoUnidadesProducto,10)){
+                // RESTA
+                iDiferencia = parseInt(sUnidadesProducto,10) - parseInt(sActualizadoUnidadesProducto,10);
+                console.log("Elementos quitados: " + iDiferencia)
+
+                iTotalUnidades = parseInt(producto['sUnidadesProducto'], 10) - iDiferencia;
+                iNuevoTotal = parseFloat(producto['iPrecioProducto']) * iDiferencia;
+                iNuevoTotal = iTotalActual - iNuevoTotal;
+
+                console.log("Total nuevo: " + iNuevoTotal)
+
+                  // Realiza la actualización
+                  await CarritoCompra.updateOne(
+                    {
+                      "oIdUsuario": sIdCliente,
+                      "aProductos.sIdProducto": sIdProducto
+                    },
+                    {
+                      "$set": {
+                        "aProductos.$[element].sUnidadesProducto": iTotalUnidades + "",
+                        "iTotal": iNuevoTotal
+                      }
+                    },
+                    {
+                      arrayFilters: [
+                        { "element.sIdProducto": sIdProducto }
+                      ]
+                    }
+                  );
+
+              }else{
+
+                iDiferencia = parseInt(sActualizadoUnidadesProducto,10) - parseInt(sUnidadesProducto,10);
+                console.log("Elementos agregados: " + iDiferencia)
+                //SUMA
+                iTotalUnidades = parseInt(producto['sUnidadesProducto'], 10) + iDiferencia;
+                iNuevoTotal = parseFloat(producto['iPrecioProducto']) * iDiferencia;
+                iNuevoTotal = iTotalActual + iNuevoTotal;
+
+                console.log("Total nuevo: " + iNuevoTotal)
+
+                // Realiza la actualización
+                await CarritoCompra.updateOne(
+                  {
+                    "oIdUsuario": sIdCliente,
+                    "aProductos.sIdProducto": sIdProducto
+                  },
+                  {
+                    "$set": {
+                      "aProductos.$[element].sUnidadesProducto": iTotalUnidades + "",
+                      "iTotal": iNuevoTotal
+                    }
+                  },
+                  {
+                    arrayFilters: [
+                      { "element.sIdProducto": sIdProducto }
+                    ]
+                  }
+                );
+              }
+  
+          }
+
+      } catch (error) {
+        
+      }
+    }
+
+    public static async eliminarproductocarrito(sdCarrito:string, sdProducto:string){
+
+      try {
+        let iNuevoTotal: number;
+
+        let carritoCliente = await CarritoCompra.findOne({ "_id": sdCarrito, "aProductos.sIdProducto": sdProducto });
+  
+        if (carritoCliente != null) {
+
+          console.log("CARRITO " + carritoCliente)
+  
+          const producto = carritoCliente.aProductos.find(item => item['sIdProducto'] === sdProducto);
+          
+          console.log("PRODUCTO " + producto['iPrecioProducto'])
+
+          let iTotalActual:any = carritoCliente['iTotal'];
+
+          iNuevoTotal = parseInt(iTotalActual,10) - (parseInt(producto['iPrecioProducto'],10) * parseInt(producto['sUnidadesProducto'],10))
+  
+          await CarritoCompra.updateOne(
+            { "_id": sdCarrito }, // Filtrar el documento específico
+            { "$pull": { "aProductos": { "sIdProducto": sdProducto } },
+              "$set":{ "iTotal": iNuevoTotal}
+            } // Eliminar el producto con el sIdProducto dado
+          )
+
+          carritoCliente = await CarritoCompra.findOne({ "_id": sdCarrito})
+
+          if (carritoCliente['aProductos'].length == 0) {
+            DBmanipulation.eliminarDocumento(sdCarrito, "cCarritoCompra");
+          }
+
+
+        }else{
+          console.log("No existe el carrito")
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
 }
 

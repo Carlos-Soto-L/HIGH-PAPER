@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito</title>
+</head>
+<body>
+
+
+    <%- include('../templates/vw_encabezadoGeneral', {login: isLogin}) %>
+
+    <div class="list-group" style="width: 500px; margin: 100px auto;" class="container">
+        <li class="list-group-item active" aria-current="true" style="background-color: #1C232E;">PRODUCTOS AGREGADOS</li>
+        <% if(carrito != null){ %>
+
+
+            <% carrito[0].aProductos.forEach((prod) => { %>
+                <li class="list-group-item">
+                    <form action="/user/actualizarproductocarrito/<%= prod.sIdProducto %>" method="post">
+
+                        <input type="text" style="display: none;" name="sIdProducto" value="<%= prod.sIdProducto %>">
+                        <input type="text" style="display: none;" name="sIdCarrito" value="<%= carrito[0]._id %>">
+                        <div class="row">
+                            <div class="col-2">
+                                <img src="<%= prod.sFotoProducto %>" alt="" style="width: 30px;">
+                            </div>
+                            <div class="col-10">
+                                <p><%= prod.sNombreProducto %></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <p><span style="font-weight: bold;"> Precio </span><%= prod.iPrecioProducto %> MXM</p>
+                            </div>
+                            <div class="col-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16" style="position: relative; top: 0px;">
+                                    <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                                    <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                                  </svg>
+                                <input type="submit" value="Actualizar" class="btn btn-success">
+
+                                <a href="/user/eliminarproductocarrito/<%= carrito[0]._id %>/<%= prod.sIdProducto %>" class="btn btn-danger">Eliminar</a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                Unidades
+                            </div>
+                            <div class="col-3">
+                                <input type="number" name="sActualizadoUnidadesProducto" min="1" id="" value="<%= prod.sUnidadesProducto %>" style="width: 60px;">
+                                <input type="number" name="sUnidadesProducto" id="" value="<%= prod.sUnidadesProducto %>" style="display: none;">
+                            </div>
+                            <div class="col-4">
+
+                            </div>
+                        </div>
+                    </form>
+                </li>
+                <% }); %>
+
+
+                <!-- TOTAL  -->
+                <br>
+                <br>
+                <p>Total</p>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">$</span>
+                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= carrito[0].iTotal %>" disabled>
+                    <span class="input-group-text">MXM</span>
+                  </div>
+
+
+
+        <% }else{ %>
+            <li class="list-group-item">Aún no has añadido ningún producto</li>
+        <%} %>
+        
+      </div>
+
+
+
+      <%- include('../templates/vw_footerGeneral') %>
+</body>
+</html>
