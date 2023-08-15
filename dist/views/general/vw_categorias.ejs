@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorias</title>
+</head>
+<body>
+    <%- include('../templates/vw_encabezadoGeneral', {login: isLogin}) %>
+
+    <div class="row">
+        <div class="col-3">
+            <!-- MENU -->
+            <br>
+            <br>
+            <ul class="list-group">
+                <li class="list-group-item active" aria-current="true">CATEGORÍAS</li>
+                <form action="/buscarproductocategorias" method="post">
+
+
+                    <% if(categorias != null){ %>
+
+                    <% categorias.forEach((objeto) => { %>
+                        <li class="list-group-item">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="<%= objeto.sCategoria  %>"  name="aCategoria" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    <%= objeto.sCategoria  %>
+                                </label>
+                            </div>
+                        </li>
+                        <% }); %>
+
+                    <% }else{ %>
+                        <li class="list-group-item">No se encontrarón categorías</li>
+                    <% } %>
+
+                    <li class="list-group-item">
+                        <div style="width: 100%; text-align: center;">
+                            <button type="submit" class="btn btn-primary">Realizar filtro</button>
+                        </div>
+                    </li>
+
+                </form>
+              </ul>
+        </div>
+        <div class="col-9">
+            <!-- CONTENIDO -->
+
+            <%if(oProductos != null){ %>
+                <% let contador = 1; %>
+                <div class="card-group mt-4 mb-4">
+                <% oProductos.forEach(function(producto){ %>
+                    <% if(contador/3 == 1){ %>
+                        <div class="card ms-4 me-4"><img class="card-img-top w-100 d-block" src="<%= producto.aFotos[0] %>" style="max-width: 400px; margin: 0px auto;">
+                            <div class="card-body">
+                                <h4 class="card-title"><%= producto.sNombre %></h4>
+                                <p class="card-text"><%= producto.sDescripcion  %></p><button class="btn btn-primary" type="button"><a href="/detalleproducto/<%= producto._id %>" style="text-decoration: none; color: azure;">Ver mas</a></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-group mt-4 mb-4">
+                        <% contador = 1 %>
+                    <% }else{ %>
+                        <div class="card ms-4 me-4"><img class="card-img-top w-100 d-block" src="<%= producto.aFotos[0] %>" style="max-width: 400px; margin: 0px auto;">
+                            <div class="card-body">
+                                <h4 class="card-title"><%= producto.sNombre %></h4>
+                                <p class="card-text"><%= producto.sDescripcion  %></p><button class="btn btn-primary" type="button"><a href="/detalleproducto/<%= producto._id %>" style="text-decoration: none; color: azure;">Ver mas</a></button>
+                            </div>
+                        </div>
+                    <% } %>
+                    <% contador = contador + 1 %>
+                  <% }); %>
+                <% } %>
+        </div>
+    </div>
+
+    <%- include('../templates/vw_footerGeneral') %>
+</body>
+</html>

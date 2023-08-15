@@ -11,8 +11,10 @@ viewsRouter.get('/registro', viewsController.getRegistro);
 viewsRouter.get('/detalleproducto/:id', viewsController.getDetalleProducto)
 // RUTA PARA DESPLIEGAR LOS PRODUCTOS RELACIONADOS CON LA PALABRA INTRODUCIDA EN EL BUSCADOR
 viewsRouter.post('/buscarproducto', viewsController.getProductosBuscador)
-
-
+// RUTA PARA RENDERIZAR LA VISTA CATEGORÍAS
+viewsRouter.get('/buscarproductocategorias', viewsController.productosCategorias)
+// RUTA PARA BUSCAR PRODUCTOS POR CATEGORIAS
+viewsRouter.post('/buscarproductocategorias', viewsController.getProductosCategorias)
 
 // Exporta el enrutador para su uso en otros archivos
 export default viewsRouter;
