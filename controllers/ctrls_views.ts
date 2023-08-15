@@ -83,22 +83,88 @@ class viewsController {
         }
 
         public static async getProductosBuscador(req: Request, res: Response){
-            const {sPalabra,  ...rest} = req.body;
-            const expresionRegular = new RegExp(sPalabra, "i");
-            let oFiltro = {"sNombre": expresionRegular}
-            const resultadoConsulta = await DBmanipulation.obtenerRegistrosFiltro(oFiltro  ,"cProducto");
-            console.log(resultadoConsulta)
-            if (req.cookies.jwt) {
-                viewsController.oToken = await Utils.isLogin(req.cookies.jwt);
-                if (viewsController.oToken != null) {
-                    res.render("general/vw_resultadobuscador",{oProductos: resultadoConsulta, isLogin:true});
+            try {
+                const {sPalabra,  ...rest} = req.body;
+                const expresionRegular = new RegExp(sPalabra, "i");
+                let oFiltro = {"sNombre": expresionRegular}
+                const resultadoConsulta = await DBmanipulation.obtenerRegistrosFiltro(oFiltro  ,"cProducto");
+                if (req.cookies.jwt) {
+                    viewsController.oToken = await Utils.isLogin(req.cookies.jwt);
+                    if (viewsController.oToken != null) {
+                        res.render("general/vw_resultadobuscador",{oProductos: resultadoConsulta, isLogin:true});
+                    }else{
+                        res.render("general/vw_resultadobuscador",{oProductos: resultadoConsulta, isLogin:false});
+                    }
                 }else{
                     res.render("general/vw_resultadobuscador",{oProductos: resultadoConsulta, isLogin:false});
                 }
-            }else{
-                res.render("general/vw_resultadobuscador",{oProductos: resultadoConsulta, isLogin:false});
+            } catch (error) {
+                console.log(error)
+                res.send("Error interno")
             }
             
+            
+        }
+
+        public static async productosCategorias(req: Request, res: Response){
+            try {
+                const resultadoConsulta = await DBmanipulation.obtenerRegistros("cProducto");
+                const aCategorias = await DBmanipulation.obtenerRegistros("cCategoria");
+                if (req.cookies.jwt) {
+                    viewsController.oToken = await Utils.isLogin(req.cookies.jwt);
+                    if (viewsController.oToken != null) {
+                        res.render("general/vw_categorias", {oProductos: resultadoConsulta, categorias: aCategorias, isLogin:true})
+                    }else{
+                        res.render("general/vw_categorias", {oProductos: resultadoConsulta, categorias: aCategorias, isLogin:false})
+                    }
+                }else{
+                    res.render("general/vw_categorias", {oProductos: resultadoConsulta, categorias: aCategorias, isLogin:false})
+                }
+                
+            } catch (error) {
+                console.log(error)
+                res.send("Error interno")
+            }
+        }
+
+        public static async getProductosCategorias(req: Request, res: Response){
+            try {
+                var {aCategoria,  ...rest} = req.body;
+                aCategoria = Array.isArray(aCategoria)? aCategoria : [aCategoria]
+                console.log(aCategoria)
+                if (aCategoria.lenght == 0) {
+                    res.send("SIN CATEGORÍAS")
+                } else {
+                    var arregloFiltro = [];
+    
+                    aCategoria.forEach((elemento: string) => {
+                        arregloFiltro.push({ aCategorias: elemento })
+                    });
+    
+                    let oFiltro = {
+                        "$or": arregloFiltro
+                    }
+                    const resultadoConsulta = await DBmanipulation.obtenerRegistrosFiltro(oFiltro  ,"cProducto");
+                    const aCategorias = await DBmanipulation.obtenerRegistros("cCategoria");
+                    if (req.cookies.jwt) {
+                        viewsController.oToken = await Utils.isLogin(req.cookies.jwt);
+                        if (viewsController.oToken != null) {
+                            res.render("general/vw_categorias", {oProductos: resultadoConsulta, categorias: aCategorias, isLogin:true})
+                        }else{
+                            res.render("general/vw_categorias", {oProductos: resultadoConsulta, categorias: aCategorias, isLogin:false})
+                        }
+                    }else{
+                        res.render("general/vw_categorias", {oProductos: resultadoConsulta, categorias: aCategorias, isLogin:false})
+                    }
+
+
+                    
+                }
+
+            } catch (error) {
+                console.log(error)
+                res.send("Error interno")
+            }
         }
 
 
