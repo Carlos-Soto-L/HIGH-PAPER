@@ -248,50 +248,60 @@ class adminController{
     }
 
     public static async editardetallesproducto(req: Request, res: Response){
-        const { sNombre, sDescripcion, iCantidadExistencia, iPrecio, aCaracteristica, sId, aCategorias, ...rest } = req.body;
-        const data = req.body;
-
-        const oCaracteristicas = await DBmanipulation.obtenerRegistros("cCaracteristica");
-
-        let oCategoriasObj = [];
-        let contador = 0;
-        oCaracteristicas.forEach((objeto) => {
-            oCategoriasObj.push({"sCaracteristica":objeto.sCaracteristica,"sValor": aCaracteristica[contador]})
-            contador++;
-          });
-
-        // Los atributos que deseas actualizar
-        const nuevosAtributos = {
-            sNombre: sNombre,
-            sDescripcion: sDescripcion,
-            iCantidadExistencia: iCantidadExistencia,
-            iPrecio: iPrecio,
-            aCategorias: Array.isArray(aCategorias)? aCategorias : [aCategorias],
-            aCaracteristicas: oCategoriasObj
-            // Puedes agregar más atributos a actualizar aquí
-        };
-
-        const resultado = await DBmanipulation.actualizardocumento(sId, nuevosAtributos,"cProducto");
-
-        if (resultado == 1) {
-            res.redirect("/admin/administrar_productos")
-        } else {
-            return res.status(500).json({
-                status:0, 
-                mensaje: "Error interno"
+        try {
+            const { sNombre, sDescripcion, iCantidadExistencia, iPrecio, aCaracteristica, sId, aCategorias, ...rest } = req.body;
+            const data = req.body;
+    
+            const oCaracteristicas = await DBmanipulation.obtenerRegistros("cCaracteristica");
+    
+            let oCategoriasObj = [];
+            let contador = 0;
+            oCaracteristicas.forEach((objeto) => {
+                oCategoriasObj.push({"sCaracteristica":objeto.sCaracteristica,"sValor": aCaracteristica[contador]})
+                contador++;
               });
+    
+            // Los atributos que deseas actualizar
+            const nuevosAtributos = {
+                sNombre: sNombre,
+                sDescripcion: sDescripcion,
+                iCantidadExistencia: iCantidadExistencia,
+                iPrecio: iPrecio,
+                aCategorias: Array.isArray(aCategorias)? aCategorias : [aCategorias],
+                aCaracteristicas: oCategoriasObj
+                // Puedes agregar más atributos a actualizar aquí
+            };
+    
+            const resultado = await DBmanipulation.actualizardocumento(sId, nuevosAtributos,"cProducto");
+    
+            if (resultado == 1) {
+                res.redirect("/admin/administrar_productos")
+            } else {
+                return res.status(500).json({
+                    status:0, 
+                    mensaje: "Error interno"
+                  });
+            }
+        } catch (error) {
+            console.log(error)
         }
+
     }
 
     public static async eliminarproducto(req: Request, res: Response){
-        const sId = req.params.id;
-        const resultado = await DBmanipulation.eliminarDocumento(sId, "cProducto");
-
-        if (resultado == 1) {
-            res.redirect("/admin/administrar_productos");
-        } else {
-            res.send("Error")
+        try {
+            const sId = req.params.id;
+            const resultado = await DBmanipulation.eliminarDocumento(sId, "cProducto");
+    
+            if (resultado == 1) {
+                res.redirect("/admin/administrar_productos");
+            } else {
+                res.send("Error")
+            }
+        } catch (error) {
+            console.log(error)
         }
+
 
     }
 
@@ -374,30 +384,35 @@ class adminController{
 
 
     public static async eliminarcategorias(req: Request, res: Response){
-        const sId = req.params.id;
-        const sCategoriaAntigua = req.params.categoria;
-        let resultado;
-        resultado = await DBmanipulation.eliminarDocumento(sId, "cCategoria");
-
-        if (resultado == 1) {
-            // Define el filtro para encontrar el documento que deseas actualizar
-            const filtro = { aCategorias: sCategoriaAntigua };
-        
-            // Define el nuevo valor que deseas establecer en el arreglo
-            const valorAEliminar = sCategoriaAntigua;
-
-            resultado = await DBmanipulation.eliminarCategoriaProductos(filtro, valorAEliminar);
-
-            console.log(resultado)
+        try {
+            const sId = req.params.id;
+            const sCategoriaAntigua = req.params.categoria;
+            let resultado;
+            resultado = await DBmanipulation.eliminarDocumento(sId, "cCategoria");
+    
             if (resultado == 1) {
-                res.redirect("/admin/administrar_categorias");
+                // Define el filtro para encontrar el documento que deseas actualizar
+                const filtro = { aCategorias: sCategoriaAntigua };
+            
+                // Define el nuevo valor que deseas establecer en el arreglo
+                const valorAEliminar = sCategoriaAntigua;
+    
+                resultado = await DBmanipulation.eliminarCategoriaProductos(filtro, valorAEliminar);
+    
+                console.log(resultado)
+                if (resultado == 1) {
+                    res.redirect("/admin/administrar_categorias");
+                } else {
+                    res.send("Error")
+                }
+    
             } else {
                 res.send("Error")
             }
-
-        } else {
-            res.send("Error")
+        } catch (error) {
+            console.log(error)
         }
+
     }
 
     public static async mostrarcaracteristicas(req: Request, res: Response){
@@ -434,58 +449,67 @@ class adminController{
 
 
     public static async actualizarcaracteristica(req: Request, res: Response){
-
-        const {sId, sCaracteristica, sCaracteristicaAntigua, ...rest} = req.body;
-        console.log(req.body)
-        let resultado;
-        // Los atributos que deseas actualizar
-        const nuevosAtributos = {
-            sCaracteristica: sCaracteristica
-            // Puedes agregar más atributos a actualizar aquí
-        };
-
-        resultado = await DBmanipulation.actualizardocumento(sId, nuevosAtributos,"cCaracteristica");
-
-        resultado = await DBmanipulation.actualizarCaracteristicaProductos(sCaracteristicaAntigua, sCaracteristica);
-
-        console.log(resultado)
-
-        if (resultado == 1) {
-            return res.status(200).json({
-                status:1, 
-                mensaje: "Característica actualizada de forma correcta"
-              });
-        } else {
-            return res.status(500).json({
-                status:0, 
-                mensaje: "Ah ocurrio un error"
-              });
+        try {
+            const {sId, sCaracteristica, sCaracteristicaAntigua, ...rest} = req.body;
+            console.log(req.body)
+            let resultado;
+            // Los atributos que deseas actualizar
+            const nuevosAtributos = {
+                sCaracteristica: sCaracteristica
+                // Puedes agregar más atributos a actualizar aquí
+            };
+    
+            resultado = await DBmanipulation.actualizardocumento(sId, nuevosAtributos,"cCaracteristica");
+    
+            resultado = await DBmanipulation.actualizarCaracteristicaProductos(sCaracteristicaAntigua, sCaracteristica);
+    
+            console.log(resultado)
+    
+            if (resultado == 1) {
+                return res.status(200).json({
+                    status:1, 
+                    mensaje: "Característica actualizada de forma correcta"
+                  });
+            } else {
+                return res.status(500).json({
+                    status:0, 
+                    mensaje: "Ah ocurrio un error"
+                  });
+            }
+        } catch (error) {
+            console.log(error)
         }
+
 
 
     }
 
     public static async eliminarcaracteristica(req: Request, res: Response){
-        const sId = req.params.id;
-        const sCaracteristicaAntigua = req.params.sCaracteristica;
-        let resultado;
-        console.log(sId)
-        resultado = await DBmanipulation.eliminarDocumento(sId, "cCaracteristica");
-
-        if (resultado == 1) {
-
-            resultado = await DBmanipulation.eliminarCaracteristicaProductos(sCaracteristicaAntigua);
-
-            console.log(resultado)
+        try {
+            const sId = req.params.id;
+            const sCaracteristicaAntigua = req.params.sCaracteristica;
+            let resultado;
+            console.log(sId)
+            resultado = await DBmanipulation.eliminarDocumento(sId, "cCaracteristica");
+    
             if (resultado == 1) {
-                res.redirect("/admin/administrar_caracteristicas");
+    
+                resultado = await DBmanipulation.eliminarCaracteristicaProductos(sCaracteristicaAntigua);
+    
+                console.log(resultado)
+                if (resultado == 1) {
+                    res.redirect("/admin/administrar_caracteristicas");
+                } else {
+                    res.send("Error")
+                }
+    
             } else {
                 res.send("Error")
             }
-
-        } else {
-            res.send("Error")
+        } catch (error) {
+            console.log(error)
         }
+
     }
 
     public static async mostrarpedidos(req: Request, res: Response){
