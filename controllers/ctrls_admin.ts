@@ -424,6 +424,50 @@ class adminController{
             res.send("Error")
         }
     }
+
+    public static async mostrarpedidos(req: Request, res: Response){
+        try {
+            const oPedidos = await DBmanipulation.obtenerRegistros("cPedido");
+
+    
+            res.render("admin/vw_adminpedidos",{pedidos: oPedidos})
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({
+                status:0, 
+                mensaje: "Ocurrio un error interno"
+            })
+        }
+    }
+
+    public static async editarpedido(req: Request, res: Response){
+        try {
+            const sId = req.params.id;
+            let resultado = await DBmanipulation.obtenerRegistroById(sId, "cPedido");
+            console.log(resultado)
+            res.render("admin/vw_editarpedido",{pedido: resultado})
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({
+                status:0, 
+                mensaje: "Ocurrio un error interno"
+            })
+        }
+    }
+    
+    public static async actualizarestatuspedido(req: Request, res: Response){
+        try {
+            const {sEstatusPedido, sIdPedido, ...rest} = req.body;
+            const resultado = await DBmanipulation.actualizaratributodocumento(sIdPedido, "sEstatus", sEstatusPedido, "cPedido");
+            res.redirect("/admin/editarpedido/" +  sIdPedido)
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({
+                status:0, 
+                mensaje: "Ocurrio un error interno"
+            })
+        }
+    }
     
 }
 

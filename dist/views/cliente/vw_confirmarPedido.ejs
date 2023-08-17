@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido</title>
+</head>
+<body>
+    <%- include('../templates/vw_encabezadoGeneral', {login: isLogin}) %>
+    
+    <div class="row d-flex align-items-center">
+        <div class="col-6 d-flex flex-column justify-content-center">
+            <ul class="list-group">
+                <li class="alert alert-success">Productos</li>
+                <% carrito[0].aProductos.forEach((prod) => { %>
+                <li class="list-group-item">
+                    <img src="<%= prod.sFotoProducto %>" alt="" style="width: 30px; margin-right: 10px; float: left;">
+                    <p><%= prod.sNombreProducto %></p>
+                    <div style="clear: both;"></div>
+                    <span>Unidades: </span>
+                    <span><%= prod.sUnidadesProducto %></span>
+                </li>
+                <% }); %>
+            </ul>
+    
+            <div class="text-center">
+                <br>
+                <br>
+                <p>Metodo de envio</p>
+                <div class="form-check d-flex justify-content-center">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled1" checked disabled>
+                    <label class="form-check-label" for="flexCheckCheckedDisabled1">
+                        Recoger en tienda
+                    </label>
+                </div>
+            <br>
+                <p>Forma de pago</p>
+                <div class="form-check d-flex justify-content-center">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled2" checked disabled>
+                    <label class="form-check-label" for="flexCheckCheckedDisabled2">
+                        Pago en efectivo
+                    </label>
+                </div>
+                <br>
+                <br>
+            </div>
+        </div>
+    
+        <div class="col-6 d-flex flex-column justify-content-center">
+            <div class="text-center">
+            <span ><b>Total:</b></span>
+            <span >$<%= carrito[0].iTotal %> MXM</span>
+            <div style="clear: both;"></div>
+            <br>
+            <br>
+            <form action="/user/realizarpedido" method="post">
+                <input type="text" style="display: none;" value="<%= carrito[0].oIdUsuario %>">
+                <button type="submit" class="btn btn-success">Realizar pedido</button>
+            </form>
+        </div>
+        </div>
+    </div>
+
+
+    <%- include('../templates/vw_footerGeneral') %>
+</body>
+</html>

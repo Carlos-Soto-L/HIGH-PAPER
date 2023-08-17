@@ -14,10 +14,10 @@
         <li class="list-group-item active" aria-current="true" style="background-color: #1C232E;">PRODUCTOS AGREGADOS</li>
         <% if(carrito != null){ %>
 
-
             <% carrito[0].aProductos.forEach((prod) => { %>
                 <li class="list-group-item">
                     <form action="/user/actualizarproductocarrito/<%= prod.sIdProducto %>" method="post">
+                        
 
                         <input type="text" style="display: none;" name="sIdProducto" value="<%= prod.sIdProducto %>">
                         <input type="text" style="display: none;" name="sIdCarrito" value="<%= carrito[0]._id %>">
@@ -71,6 +71,10 @@
                     <span class="input-group-text">MXM</span>
                   </div>
 
+                  <form action="/user/confirmarPedido" method="post">
+                    <input type="text" value="<%= carrito[0].oIdUsuario %>" style="display: none;" name="sIdCliente">
+                        <button type="submit" class="btn btn-primary">Realizar pedido</button>
+                  </form>
 
 
         <% }else{ %>
