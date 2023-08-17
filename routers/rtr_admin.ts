@@ -14,8 +14,8 @@ import multerS3 from 'multer-s3';
 const s3Client = new S3Client({
     region: 'us-east-2', // ejemplo: 'us-west-2'
     credentials: {
-        accessKeyId: 'AKIAX5OPQGJPLW5SFHO2',
-        secretAccessKey: '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',
+        accessKeyId: process.env.ACCESS_KEY_ID,
+        secretAccessKey: process.env.SECRET_ACCESS_KEY,
     }
 });
 
