@@ -141,7 +141,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist/public/assets/img/
+dist/public/assets/img/products
 dist/app.js
 dist/app.js.map
 dist/class/
