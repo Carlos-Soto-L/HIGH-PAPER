@@ -1,4 +1,4 @@
-import { limpiarFormulario } from './utils.js';
+
 
 const formCaracteristica = document.getElementById('caracteristicaform');
 
@@ -24,7 +24,28 @@ formCaracteristica.addEventListener('submit', async (e) => {
     if (datos.status == 0) {
         alertify.notify(datos.mensaje, 'error', 5, function(){  /*console.log('dismissed');*/ });
     }else if (datos.status == 1) {
-      limpiarFormulario('caracteristicaform');
+        // Recorre todos los elementos del formulario
+      for (var i = 0; i < formCaracteristica.elements.length; i++) {
+        var elemento = formulario.elements[i];
+        
+        // Verifica el tipo de elemento y limpia su valor
+        switch (elemento.type) {
+            case "text":
+            case "textarea":
+            case "number":
+            case "date":
+            case "file":
+            elemento.value = "";
+            break;
+            case "checkbox":
+            case "radio":
+            elemento.checked = false;
+            break;
+            case "select":
+            elemento.selectedIndex = -1;
+            break;
+        }
+    }
       alertify.notify(datos.mensaje, 'success', 5, function(){  /*console.log('dismissed');*/ });
     }else{
         console.log(error)

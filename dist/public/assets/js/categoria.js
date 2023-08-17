@@ -1,4 +1,4 @@
-import { limpiarFormulario } from './utils.js';
+
 
 const formCategoria = document.getElementById('categoriaform');
 
@@ -24,7 +24,6 @@ formCategoria.addEventListener('submit', async (e) => {
     if (datos.status == 0) {
         alertify.notify(datos.mensaje, 'error', 5, function(){  /*console.log('dismissed');*/ });
     }else if (datos.status == 1) {
-      limpiarFormulario('categoriaform');
       alertify.notify(datos.mensaje, 'success', 5, function(){  /*console.log('dismissed');*/ });
     }else{
         console.log(error)

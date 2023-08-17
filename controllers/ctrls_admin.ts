@@ -88,7 +88,26 @@ class adminController{
 
             const { sNombre, sDescripcion, aCategorias, iCantidadExistencia, iPrecio, aCaracteristica, ...rest } = req.body;
             
-            const files = req.files;
+            interface UploadedFile {
+                fieldname: string;
+                originalname: string;
+                encoding: string;
+                mimetype: string;
+                size: number;
+                bucket: string;
+                key: string;
+                acl: string;
+                contentType: string;
+                contentDisposition: null | string;
+                contentEncoding: null | string;
+                storageClass: string;
+                serverSideEncryption: null | string;
+                metadata: { fieldName: string };
+                location: string;
+                etag: string;
+                versionId?: string;
+              }
+
             var filenames;
 
             const oCaracteristicas = await DBmanipulation.obtenerRegistros("cCaracteristica");
@@ -100,8 +119,19 @@ class adminController{
                 contador++;
               });
 
-            if (files) {
-              filenames = Object.values(files).map((file: Express.Multer.File) => "/assets/img/products/" + file.filename);
+            // Determinar si `req.files` es una matriz o un objeto
+            if (Array.isArray(req.files)) {
+                const files = req.files as unknown as UploadedFile[];
+                filenames = files.map(doc => doc.location);
+            } else {
+                // Es un objeto, así que obtén todos los archivos de todos los campos
+                const filesByField: { [fieldname: string]: UploadedFile[] } = req.files as unknown as { [fieldname: string]: UploadedFile[] };
+                for (const key in filesByField) {
+                if (Object.hasOwnProperty.call(filesByField, key)) {
+                    const files: UploadedFile[] = filesByField[key];
+                    filenames.push(...files.map(doc => doc.location));
+                }
+                }
             }
 
             const oProducto = {
@@ -165,14 +195,47 @@ class adminController{
 
     public static async editarfotosproducto(req: Request, res: Response){
         try {
-            const id = req.params.id;
-            console.log(id)
-            const files = req.files;
-            var filenames;
-
-            if (files) {
-                filenames = Object.values(files).map((file: Express.Multer.File) => "/assets/img/products/" + file.filename);
+            interface UploadedFile {
+                fieldname: string;
+                originalname: string;
+                encoding: string;
+                mimetype: string;
+                size: number;
+                bucket: string;
+                key: string;
+                acl: string;
+                contentType: string;
+                contentDisposition: null | string;
+                contentEncoding: null | string;
+                storageClass: string;
+                serverSideEncryption: null | string;
+                metadata: { fieldName: string };
+                location: string;
+                etag: string;
+                versionId?: string;
               }
+
+                const id = req.params.id;
+                console.log(id)
+                const files = req.files;
+                var filenames;
+
+
+            // Determinar si `req.files` es una matriz o un objeto
+            if (Array.isArray(req.files)) {
+                const files = req.files as unknown as UploadedFile[];
+                filenames = files.map(doc => doc.location);
+            } else {
+                // Es un objeto, así que obtén todos los archivos de todos los campos
+                const filesByField: { [fieldname: string]: UploadedFile[] } = req.files as unknown as { [fieldname: string]: UploadedFile[] };
+                for (const key in filesByField) {
+                if (Object.hasOwnProperty.call(filesByField, key)) {
+                    const files: UploadedFile[] = filesByField[key];
+                    filenames.push(...files.map(doc => doc.location));
+                }
+                }
+            }
+
             const resultado = await DBmanipulation.actualizaratributodocumento(id, "aFotos", filenames, "cProducto");
             if (resultado == 1) {
                 res.redirect("/admin/editarproducto/" + id)

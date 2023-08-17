@@ -4,30 +4,36 @@ import { Validator } from '../class/cls_validator'
 import MWAuthentication from '../middlewares/mw_authentication';
 
 import { Request, Response, NextFunction } from 'express';
-import multer, { Multer } from 'multer';
+// import multer, { Multer } from 'multer';
 import path from 'path';
 
-// Configuración para el almacenamiento de las imagenes de los productos.
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, path.join(__dirname, '../public/assets/img/products/')); // Ruta donde se guardarán los archivos
-    },
-    filename: (req, file, cb) => {
-        const extension = path.extname(file.originalname);
-        const fechaCarga = Date.now().toString();
-        const nombreArchivo = fechaCarga + Math.random().toString().replace(".","") + extension;
-        cb(null, nombreArchivo); // Nuevo nombre del archivo
-    },
-  });
+import { S3Client, S3 } from "@aws-sdk/client-s3";
+import multer from 'multer';
+import multerS3 from 'multer-s3';
 
-  const upload = multer({ storage:storage, fileFilter: (req, file, cb) => {
-    const allowedMimeTypes = ['image/png', 'image/jpeg'];
-    if (allowedMimeTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      // Archivo no valido.
+const s3Client = new S3Client({
+    region: 'us-east-2', // ejemplo: 'us-west-2'
+    credentials: {
+        accessKeyId: process.env.ACCESS_KEY_ID,
+        secretAccessKey: process.env.SECRET_ACCESS_KEY,
     }
-  },});
+});
+
+const upload = multer({
+    storage: multerS3({
+        s3: s3Client as any, // Es probable que necesites el "as any" debido a diferencias de tipos entre `multerS3` y el nuevo SDK de AWS.
+        bucket: 'high-paper',
+        metadata: function (req, file, cb) {
+            cb(null, {fieldName: file.fieldname});
+        },
+        key: function (req, file, cb) {
+            cb(null, Date.now().toString() + '-' + file.originalname)
+        }
+    })
+});
+
+
+
 
 
 const adminRouter = express.Router();
