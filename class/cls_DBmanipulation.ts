@@ -4,6 +4,7 @@ import Categoria from '../models/mdl_cCategoria';
 import Caracteristica from '../models/mdl_cCaracteristica';
 import Producto from '../models/mdl_cProducto';
 import CarritoCompra from '../models/mdl_cCarritoCompra';
+import Pedido from "../models/mdl_cPedido"
 import mongoose from 'mongoose';
 
 
@@ -42,6 +43,9 @@ export default class DBmanipulation{
           case "cCarritoCompra":
             this.oDocumento = new CarritoCompra(oObject);
             break;
+          case "cPedido":
+            this.oDocumento = new Pedido(oObject);
+            break;
 
           // TO DO: Instanciar el objeto documento con las demas clases ...
           default:
@@ -74,6 +78,9 @@ export default class DBmanipulation{
             break;
           case "cCarritoCompra":
             this.oResultado = await CarritoCompra.find({_id:sId}).exec();
+            break;
+          case "cPedido":
+            this.oResultado = await Pedido.find({_id:sId}).exec();
             break;
           // TO DO: Instanciar el objeto documento con las demas clases ...
           default:
@@ -201,6 +208,9 @@ export default class DBmanipulation{
           case "cCaracteristica":
             this.oResultado = await Producto.find({}).exec();
             break;
+          case "cPedido":
+            this.oResultado = await Pedido.find({}).exec();
+            break;
           // TO DO: Instanciar el objeto documento con las demas clases ...
           default:
             break;
@@ -244,6 +254,9 @@ export default class DBmanipulation{
                 break;
               case "cCarritoCompra":
                 this.oResultado = await CarritoCompra.find(oFiltros).exec();
+                break;
+              case "cPedido":
+                this.oResultado = await Pedido.find(oFiltros).exec();
                 break;
               // TO DO: Instanciar el objeto documento con las demas clases ...
               default:
@@ -318,6 +331,10 @@ export default class DBmanipulation{
           case 'cProducto':
             // Busca el documento por su _id
             data = await Producto.findById(idDocumento);
+            break;
+          case 'cPedido':
+            // Busca el documento por su _id
+            data = await Pedido.findById(idDocumento);
             break;
         
           default:
@@ -700,6 +717,30 @@ export default class DBmanipulation{
         }
       } catch (error) {
         console.log(error)
+      }
+    }
+
+    public static async actualizarCantidadExistenteProducto(idProducto: string, iCantidadRestar:number) {
+      try {
+        const producto = await Producto.findById(idProducto);
+        
+        if (producto) {
+
+          if (typeof producto.iCantidadExistencia === 'number') {
+            producto.iCantidadExistencia -= iCantidadRestar;
+          } else {
+              // Puedes lanzar un error, registrar el problema o manejarlo de cualquier otra forma.
+              console.error('iCantidadExistencia no es un número');
+          }
+          
+          // Guardar cambios
+          await producto.save();
+          console.log('Producto actualizado exitosamente');
+        } else {
+          console.log('Producto no encontrado');
+        }
+      } catch (error) {
+        console.error('Error al actualizar el producto:', error);
       }
     }
 

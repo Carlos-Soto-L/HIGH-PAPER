@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos</title>
+</head>
+<body>
+    <%- include('../templates/vw_encabezadoGeneral', {login: isLogin}) %>
+
+    <% if(pedidos != null){ %>
+    <div class="alert alert-success" role="alert">
+        Podrás recoger tus productos en tienda una vez que el estatus se encuentre en <b>Listo para entregar</b>
+        <br>
+        Recuerda compartir el código del pedido con nuestros vendedores para continuar con la compra.
+      </div>
+    <div style="width: 80%; margin: 50px auto;">
+        <% pedidos.forEach((pedi) => { %>
+
+            <div class="card" style="margin-bottom: 20px;">
+                <h5 class="card-header">Código del pedido: <b><%= pedi.sCodigoPedido %></b>
+                    <span style="float: right;">Estatus: <%= pedi.sEstatus %></span></h5>
+                
+                <div class="card-body">
+                    <p><b>Productos</b></p>
+                    <% pedi.aProductos.forEach((prod)=>{ %>
+                        <span><img src="<%= prod.sFotoProducto %>" alt="" style="width: 30px;"></span>
+                        <span><%= prod.sNombreProducto %></span>
+                        <p>Unidades: <%= prod.sUnidadesProducto %></p>
+                    <% }) %>
+                    <span style="float: right;">Total: $ <%= pedi.iTotal %> MXM</span>
+                </div>
+              </div>
+    
+            <% }); %>
+    </div>
+
+    <% }else{ %>
+        <h2>Todavía no has realizado ningún pedido.</h2>
+        <% } %>
+
+    <%- include('../templates/vw_footerGeneral') %>
+</body>
+</html>

@@ -89,6 +89,16 @@ adminRouter.post('/editarcaracteristica', MWAuthentication.isAdmin, Validator.va
 // Eliminar caracteristica
 adminRouter.get('/eliminarcaracteristica/:id/:sCaracteristica', MWAuthentication.isAdmin, adminController.eliminarcaracteristica);
 
+// Ruta para administrar pedidos
+adminRouter.get('/pedidos', MWAuthentication.isAdmin, adminController.mostrarpedidos);
+
+// Ruta para actualizar un pedido
+adminRouter.get('/editarpedido/:id', MWAuthentication.isAdmin, adminController.editarpedido);
+
+// Ruta para actualizar el estatus del pedido
+adminRouter.post('/actualizarestatuspedido', MWAuthentication.isAdmin, adminController.actualizarestatuspedido);
+
+
 
 // Exporta el enrutador para su uso en otros archivos
 export default adminRouter;

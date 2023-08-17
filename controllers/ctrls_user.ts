@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import DBmanipulation from '../class/cls_DBmanipulation';
 import bcrypt from 'bcryptjs';
+import Utils from "../class/cls_utils"
 
 class userController {
 
@@ -144,6 +145,66 @@ class userController {
             res.redirect("/user/carritoCompra");
         } catch (error) {
             res.send("Error interno")
+        }
+
+    }
+
+    public static async confirmarpedido(req: Request, res: Response){
+        try {
+            const {sIdCliente,  ...rest} = req.body;
+            let oFiltro = {"oIdUsuario": sIdCliente}
+            const resultadoConsulta = await DBmanipulation.obtenerRegistrosFiltro(oFiltro  ,"cCarritoCompra");
+            res.render("cliente/vw_confirmarPedido",{carrito: resultadoConsulta , isLogin:true})
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    public static async realizarpedido(req: Request, res: Response){
+        try {
+            const {sIdCliente,  ...rest} = req.body;
+            // obtener el carrito de compra del usuario
+            let oFiltro = {"oIdUsuario": sIdCliente}
+            const resultadoConsulta = await DBmanipulation.obtenerRegistrosFiltro(oFiltro  ,"cCarritoCompra");
+            console.log(resultadoConsulta[0])
+            // actualizar las unidades disponibles para los productos
+            resultadoConsulta[0].aProductos.forEach(async (producto) => {
+                await DBmanipulation.actualizarCantidadExistenteProducto(producto.sIdProducto, parseInt(producto.sUnidadesProducto))
+            });
+            // almacenar el pedido
+            let codigo = await Utils.generateRandomCode();
+            console.log("CODIGO: " + codigo)
+            const pedido = {
+                oIdUsuario: resultadoConsulta[0].oIdUsuario,
+                aProductos:  resultadoConsulta[0].aProductos,
+                iMetodoPago: 1, 
+                iMetodoEnvio:  1,
+                sEstatus: "En preparación",
+                sCodigoPedido: codigo,
+                iTotal: resultadoConsulta[0].iTotal
+            }
+
+            await DBmanipulation.insertarDocumento(pedido, "cPedido")
+            // Eliminar El carrito de compras
+            await DBmanipulation.eliminarDocumento(resultadoConsulta[0]._id, "cCarritoCompra")
+
+            // Redireccionar a pedidos
+            res.redirect("/user/verpedidos")
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    public static async verpedido(req: Request, res: Response){
+        try {
+            const {sIdCliente, ...rest} = req.body;
+            let oFiltro = {"oIdUsuario": sIdCliente}
+            const resultadoConsulta = await DBmanipulation.obtenerRegistrosFiltro(oFiltro  ,"cPedido");
+            console.log(resultadoConsulta)
+            res.render("cliente/vw_pedidos", {pedidos: resultadoConsulta, isLogin: true})
+        } catch (error) {
+            console.log(error)
         }
 
     }

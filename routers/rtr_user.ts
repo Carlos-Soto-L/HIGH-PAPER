@@ -24,6 +24,17 @@ userRouter.post('/actualizarproductocarrito/:idproducto', MWAuthentication.isCli
 // Ruta para eliminar un producto del carrito de compra
 userRouter.get('/eliminarproductocarrito/:idcarrito/:idproducto', MWAuthentication.isCliente,  userController.eliminarproductocarrito);
 
+// Ruta para confirmar un pedido
+userRouter.post('/confirmarPedido', MWAuthentication.isCliente,  userController.confirmarpedido);
+
+// Ruta para realizar un pedido
+userRouter.post('/realizarpedido', MWAuthentication.isCliente,  userController.realizarpedido);
+
+// Ruta para visualizar los pedidos hechos por el cliente 
+userRouter.get('/verpedidos', MWAuthentication.isCliente,  userController.verpedido);
+
+
+
 
 // Exporta el enrutador para su uso en otros archivos
 export default userRouter;
